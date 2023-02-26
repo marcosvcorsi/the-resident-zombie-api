@@ -1,5 +1,5 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 
 @ObjectType()
 export class Survivor {
@@ -38,6 +38,23 @@ export class CreateSurvivorInput {
   @IsInt()
   @IsNotEmpty()
   age: number;
+
+  @Field()
+  @IsNumber()
+  @IsNotEmpty()
+  latitude: number;
+
+  @Field()
+  @IsNumber()
+  @IsNotEmpty()
+  longitude: number;
+}
+
+@InputType()
+export class UpdateSurvivorInput {
+  @Field(() => ID)
+  @IsUUID('4')
+  id: string;
 
   @Field()
   @IsNumber()
