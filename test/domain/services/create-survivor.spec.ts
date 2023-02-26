@@ -1,5 +1,5 @@
-import { CreateSurvivorRepository } from '../../../src/domain/contracts/repositories/survivor';
-import { CreateSurvivorService } from '../../../src/domain/services/create-survivor';
+import { CreateSurvivorRepository } from '@/domain/contracts/repositories/survivor';
+import { CreateSurvivorService } from '@/domain/services/create-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('CreateSurvivorService', () => {

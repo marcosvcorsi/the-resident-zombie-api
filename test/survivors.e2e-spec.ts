@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { HttpModule } from '../src/infra/http/http.module';
+import { HttpModule } from '@/infra/http/http.module';
 
 describe('SurvivorsController (e2e)', () => {
   let app: INestApplication;

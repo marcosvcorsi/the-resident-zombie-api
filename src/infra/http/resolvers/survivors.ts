@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateSurvivorService } from 'src/domain/services/create-survivor';
+import { CreateSurvivorService } from '@/domain/services/create-survivor';
 import { CreateSurvivorInput, Survivor } from '../schema/survivor';
 
 @Resolver()
