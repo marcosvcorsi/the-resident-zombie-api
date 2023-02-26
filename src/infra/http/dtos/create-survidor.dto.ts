@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateSurvivorDto {
   @ApiProperty()
@@ -10,6 +10,7 @@ export class CreateSurvivorDto {
   @ApiProperty()
   @IsInt()
   @IsNotEmpty()
+  @Min(1)
   age: number;
 
   @ApiProperty()

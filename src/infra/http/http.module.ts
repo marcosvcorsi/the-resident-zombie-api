@@ -1,7 +1,11 @@
+import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { CreateSurvivorRepository } from '../../domain/contracts/repositories/survivor';
+import {
+  CreateSurvivorRepository,
+  UpdateSurvivorRepository,
+} from '../../domain/contracts/repositories/survivor';
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
 import { SurvivorsController } from './controllers/survivors.controller';
@@ -25,6 +29,13 @@ import { SurvivorsResolver } from './resolvers/survivors';
       inject: [CreateSurvivorRepository],
       useFactory: (createSurvivorRepository: CreateSurvivorRepository) => {
         return new CreateSurvivorService(createSurvivorRepository);
+      },
+    },
+    {
+      provide: UpdateSurvivorService,
+      inject: [UpdateSurvivorRepository],
+      useFactory: (updateSurvivorRepository: UpdateSurvivorRepository) => {
+        return new UpdateSurvivorService(updateSurvivorRepository);
       },
     },
     SurvivorsResolver,
