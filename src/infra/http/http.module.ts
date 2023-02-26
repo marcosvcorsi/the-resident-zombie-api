@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CreateSurvivorRepository } from 'src/domain/contracts/repositories/survivor';
-import { CreateSurvivorService } from 'src/domain/services/create-survivor';
+import { CreateSurvivorRepository } from '../../domain/contracts/repositories/survivor';
+import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
 import { SurvivorsController } from './controllers/survivors.controller';
 

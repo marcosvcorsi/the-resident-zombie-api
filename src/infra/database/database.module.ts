@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CreateSurvivorRepository } from 'src/domain/contracts/repositories/survivor';
+import { CreateSurvivorRepository } from '../../domain/contracts/repositories/survivor';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaSurvivorsRepository } from './prisma/repositories/survivors.repository';
 

@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateSurvivorService } from 'src/domain/services/create-survivor';
+import { CreateSurvivorService } from '../../../domain/services/create-survivor';
 import { CreateSurvivorDto } from '../dtos/create-survidor.dto';
 
 @Controller({ version: '1', path: 'survivors' })

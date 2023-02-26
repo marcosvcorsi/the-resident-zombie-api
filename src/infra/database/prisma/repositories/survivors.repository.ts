@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Survivor } from 'src/domain/entities/survivor';
+import { Survivor } from '../../../../domain/entities/survivor';
 import {
   CreateSurvivorParams,
   CreateSurvivorRepository,
