@@ -1,6 +1,8 @@
+import { UpdateSurvivorRepository } from '../contracts/repositories/survivor';
 import { Survivor } from '../entities/survivor';
 
 export type UpdateSurvivorInput = {
+  id: string;
   latitude: number;
   longitude: number;
 };
@@ -10,7 +12,14 @@ export type UpdateSurvivorOutput = {
 };
 
 export class UpdateSurvivorService {
-  async execute(input: UpdateSurvivorInput): Promise<UpdateSurvivorOutput> {
-    return Promise.resolve({ survivor: null });
+  constructor(private readonly survivorRepository: UpdateSurvivorRepository) {}
+
+  async execute({
+    id,
+    ...data
+  }: UpdateSurvivorInput): Promise<UpdateSurvivorOutput> {
+    const survivor = await this.survivorRepository.update(id, data);
+
+    return { survivor };
   }
 }
