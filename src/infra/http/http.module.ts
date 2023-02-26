@@ -5,6 +5,7 @@ import { CreateSurvivorRepository } from '../../domain/contracts/repositories/su
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
 import { SurvivorsController } from './controllers/survivors.controller';
+import { HealthModule } from './health.module';
 import { SurvivorsResolver } from './resolvers/survivors';
 
 @Module({
@@ -15,6 +16,7 @@ import { SurvivorsResolver } from './resolvers/survivors';
       autoSchemaFile: true,
       sortSchema: true,
     }),
+    HealthModule,
   ],
   controllers: [SurvivorsController],
   providers: [

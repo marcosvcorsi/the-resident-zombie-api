@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from './infra/http/http.module';
 
 @Module({
@@ -7,6 +8,7 @@ import { HttpModule } from './infra/http/http.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TerminusModule,
     HttpModule,
   ],
 })
