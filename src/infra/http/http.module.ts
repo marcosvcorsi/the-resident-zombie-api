@@ -1,3 +1,4 @@
+import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
@@ -54,6 +55,13 @@ import { SurvivorsResolver } from './resolvers/survivors';
       inject: [PrismaSurvivorsRepository],
       useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
         return new ListSurvivorsService(prismaSurvivorRepository);
+      },
+    },
+    {
+      provide: DeleteSurvivorService,
+      inject: [PrismaSurvivorsRepository],
+      useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
+        return new DeleteSurvivorService(prismaSurvivorRepository);
       },
     },
     SurvivorsResolver,

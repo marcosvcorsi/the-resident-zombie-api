@@ -1,10 +1,12 @@
 import { SurvivorNotFoundError } from '@/domain/errors/survivor';
+import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   InternalServerErrorException,
@@ -30,6 +32,7 @@ export class SurvivorsController {
     private readonly updateSurvivorService: UpdateSurvivorService,
     private readonly getSurvivorService: GetSurvivorService,
     private readonly listSurvivorsService: ListSurvivorsService,
+    private readonly deleteSurvivorService: DeleteSurvivorService,
   ) {}
 
   private handleSurvivorNotFoundError(error: unknown) {
@@ -79,6 +82,21 @@ export class SurvivorsController {
   async get(@Param('id') id: string) {
     try {
       const { survivor } = await this.getSurvivorService.execute({ id });
+
+      return SurvivorViewModel.toHttp(survivor);
+    } catch (error) {
+      this.handleSurvivorNotFoundError(error);
+    }
+  }
+
+  @Delete('/:id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SurvivorViewModel,
+  })
+  async delete(@Param('id') id: string) {
+    try {
+      const { survivor } = await this.deleteSurvivorService.execute({ id });
 
       return SurvivorViewModel.toHttp(survivor);
     } catch (error) {

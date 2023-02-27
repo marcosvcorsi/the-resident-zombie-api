@@ -4,6 +4,7 @@ import {
   CountAllSurvivorsRepository,
   CreateSurvivorParams,
   CreateSurvivorRepository,
+  DeleteSurvivorRepository,
   FindAllSurvivorsParams,
   FindAllSurvivorsRepository,
   FindSurvivorRepository,
@@ -19,7 +20,8 @@ export class PrismaSurvivorsRepository
     UpdateSurvivorRepository,
     FindSurvivorRepository,
     FindAllSurvivorsRepository,
-    CountAllSurvivorsRepository
+    CountAllSurvivorsRepository,
+    DeleteSurvivorRepository
 {
   constructor(private readonly prismaService: PrismaService) {}
 
@@ -63,6 +65,16 @@ export class PrismaSurvivorsRepository
         id,
       },
       data,
+    });
+
+    return PrismaSurvivorsMapper.toDomain(survivor);
+  }
+
+  async delete(id: string): Promise<Survivor> {
+    const survivor = await this.prismaService.survivor.delete({
+      where: {
+        id,
+      },
     });
 
     return PrismaSurvivorsMapper.toDomain(survivor);
