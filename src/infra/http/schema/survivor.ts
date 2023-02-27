@@ -1,4 +1,11 @@
-import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
+import {
+  ArgsType,
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
 import { IsInt, IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 
 @ObjectType()
@@ -20,6 +27,24 @@ export class Survivor {
 
   @Field()
   longitude: number;
+}
+
+@ObjectType()
+export class PaginatedSurvivorResponse {
+  @Field()
+  total: number;
+
+  @Field(() => [Survivor])
+  data: Survivor[];
+}
+
+@ArgsType()
+export class SurvivorsArgs {
+  @Field(() => Int, { defaultValue: 20 })
+  first: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  offset: number;
 }
 
 @InputType()
