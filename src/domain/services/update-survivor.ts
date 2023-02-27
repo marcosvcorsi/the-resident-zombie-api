@@ -1,5 +1,9 @@
-import { UpdateSurvivorRepository } from '../contracts/repositories/survivor';
+import {
+  FindSurvivorRepository,
+  UpdateSurvivorRepository,
+} from '../contracts/repositories/survivor';
 import { Survivor } from '../entities/survivor';
+import { SurvivorNotFoundError } from '../errors/survivor';
 
 export type UpdateSurvivorInput = {
   id: string;
@@ -12,13 +16,22 @@ export type UpdateSurvivorOutput = {
 };
 
 export class UpdateSurvivorService {
-  constructor(private readonly survivorRepository: UpdateSurvivorRepository) {}
+  constructor(
+    private readonly survivorRepository: FindSurvivorRepository &
+      UpdateSurvivorRepository,
+  ) {}
 
   async execute({
     id,
     ...data
   }: UpdateSurvivorInput): Promise<UpdateSurvivorOutput> {
-    const survivor = await this.survivorRepository.update(id, data);
+    let survivor = await this.survivorRepository.find(id);
+
+    if (!survivor) {
+      throw new SurvivorNotFoundError();
+    }
+
+    survivor = await this.survivorRepository.update(id, data);
 
     return { survivor };
   }

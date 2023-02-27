@@ -11,3 +11,7 @@ export type UpdateSurvivorParams = Partial<Omit<Survivor, 'id'>>;
 export abstract class UpdateSurvivorRepository {
   abstract update(id: string, data: UpdateSurvivorParams): Promise<Survivor>;
 }
+
+export abstract class FindSurvivorRepository {
+  abstract find(id: string): Promise<Survivor | null>;
+}

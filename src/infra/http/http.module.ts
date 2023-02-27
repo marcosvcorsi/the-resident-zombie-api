@@ -4,10 +4,12 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import {
   CreateSurvivorRepository,
+  FindSurvivorRepository,
   UpdateSurvivorRepository,
 } from '../../domain/contracts/repositories/survivor';
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
+import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survivors.repository';
 import { SurvivorsController } from './controllers/survivors.controller';
 import { HealthModule } from './health.module';
 import { SurvivorsResolver } from './resolvers/survivors';
@@ -26,16 +28,16 @@ import { SurvivorsResolver } from './resolvers/survivors';
   providers: [
     {
       provide: CreateSurvivorService,
-      inject: [CreateSurvivorRepository],
-      useFactory: (createSurvivorRepository: CreateSurvivorRepository) => {
-        return new CreateSurvivorService(createSurvivorRepository);
+      inject: [PrismaSurvivorsRepository],
+      useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
+        return new CreateSurvivorService(prismaSurvivorRepository);
       },
     },
     {
       provide: UpdateSurvivorService,
-      inject: [UpdateSurvivorRepository],
-      useFactory: (updateSurvivorRepository: UpdateSurvivorRepository) => {
-        return new UpdateSurvivorService(updateSurvivorRepository);
+      inject: [PrismaSurvivorsRepository],
+      useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
+        return new UpdateSurvivorService(prismaSurvivorRepository);
       },
     },
     SurvivorsResolver,

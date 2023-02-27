@@ -1,9 +1,15 @@
-import { UpdateSurvivorRepository } from '@/domain/contracts/repositories/survivor';
+import {
+  FindSurvivorRepository,
+  UpdateSurvivorRepository,
+} from '@/domain/contracts/repositories/survivor';
+import { SurvivorNotFoundError } from '@/domain/errors/survivor';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('UpdateSurvivorService', () => {
-  let survivorRepository: MockProxy<UpdateSurvivorRepository>;
+  let survivorRepository: MockProxy<
+    UpdateSurvivorRepository & FindSurvivorRepository
+  >;
   let updateSurvivorService: UpdateSurvivorService;
 
   const input = {
@@ -15,12 +21,15 @@ describe('UpdateSurvivorService', () => {
   beforeAll(() => {
     survivorRepository = mock();
 
-    survivorRepository.update.mockResolvedValue({
+    const survivor = {
       ...input,
       age: 18,
       name: 'any_name',
       gender: 'male',
-    });
+    };
+
+    survivorRepository.find.mockResolvedValue(survivor);
+    survivorRepository.update.mockResolvedValue(survivor);
   });
 
   beforeEach(() => {
@@ -36,5 +45,19 @@ describe('UpdateSurvivorService', () => {
       longitude: input.longitude,
     });
     expect(response.survivor).toMatchObject(input);
+  });
+
+  it('should throw SurvivorNotFoundError if survivor does not exists', async () => {
+    survivorRepository.find.mockResolvedValueOnce(null);
+
+    await expect(updateSurvivorService.execute(input)).rejects.toBeInstanceOf(
+      SurvivorNotFoundError,
+    );
+  });
+
+  it('should throw SurvivorRepository throws', async () => {
+    survivorRepository.find.mockRejectedValueOnce(new Error());
+
+    await expect(updateSurvivorService.execute(input)).rejects.toThrow();
   });
 });
