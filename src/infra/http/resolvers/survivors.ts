@@ -10,6 +10,7 @@ import {
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
+import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 
 @Resolver()
 export class SurvivorsResolver {
@@ -18,6 +19,7 @@ export class SurvivorsResolver {
     private readonly updateSurvivorService: UpdateSurvivorService,
     private readonly getSurvivorService: GetSurvivorService,
     private readonly listSurvivorsService: ListSurvivorsService,
+    private readonly deleteSurvivorService: DeleteSurvivorService,
   ) {}
 
   @Query(() => PaginatedSurvivorResponse)
@@ -50,6 +52,15 @@ export class SurvivorsResolver {
   @Mutation(() => Survivor)
   async updateSurvivor(@Args('input') input: UpdateSurvivorInput) {
     const { survivor } = await this.updateSurvivorService.execute(input);
+
+    return survivor;
+  }
+
+  @Mutation(() => Survivor)
+  async deleteSurvivor(@Args('id') id: string) {
+    const { survivor } = await this.deleteSurvivorService.execute({
+      id,
+    });
 
     return survivor;
   }

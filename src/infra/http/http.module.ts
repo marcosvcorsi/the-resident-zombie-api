@@ -5,11 +5,6 @@ import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import {
-  CreateSurvivorRepository,
-  FindSurvivorRepository,
-  UpdateSurvivorRepository,
-} from '../../domain/contracts/repositories/survivor';
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
 import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survivors.repository';
