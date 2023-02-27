@@ -120,4 +120,27 @@ describe('SurvivorsController (e2e)', () => {
       });
     });
   });
+
+  describe('DELETE /survivors/:id', () => {
+    it('should delete an existing survivor', async () => {
+      const data = {
+        name: 'any_name',
+        age: 18,
+        gender: 'male',
+        latitude: 1,
+        longitude: 1,
+      };
+
+      const survivor = await prismaService.survivor.create({
+        data,
+      });
+
+      const response = await request(app.getHttpServer()).del(
+        `/survivors/${survivor.id}`,
+      );
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toMatchObject(data);
+    });
+  });
 });
