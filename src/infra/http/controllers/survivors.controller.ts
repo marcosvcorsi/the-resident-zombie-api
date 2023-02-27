@@ -37,7 +37,7 @@ export class SurvivorsController {
     status: HttpStatus.OK,
     type: SurvivorViewModel,
   })
-  async update(@Param('id') id: string, data: UpdateSurvivorDto) {
+  async update(@Param('id') id: string, @Body() data: UpdateSurvivorDto) {
     const { survivor } = await this.updateSurvivorService.execute({
       id,
       ...data,
