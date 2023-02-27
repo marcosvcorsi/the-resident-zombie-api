@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Survivor } from '../../../../domain/entities/survivor';
 import {
+  CountAllSurvivorsRepository,
   CreateSurvivorParams,
   CreateSurvivorRepository,
+  FindAllSurvivorsParams,
+  FindAllSurvivorsRepository,
   FindSurvivorRepository,
   UpdateSurvivorRepository,
 } from '../../../../domain/contracts/repositories/survivor';
@@ -14,7 +17,9 @@ export class PrismaSurvivorsRepository
   implements
     CreateSurvivorRepository,
     UpdateSurvivorRepository,
-    FindSurvivorRepository
+    FindSurvivorRepository,
+    FindAllSurvivorsRepository,
+    CountAllSurvivorsRepository
 {
   constructor(private readonly prismaService: PrismaService) {}
 
@@ -26,6 +31,19 @@ export class PrismaSurvivorsRepository
     });
 
     return survivor ? PrismaSurvivorsMapper.toDomain(survivor) : null;
+  }
+
+  async findAll({ page, limit }: FindAllSurvivorsParams): Promise<Survivor[]> {
+    const survivors = await this.prismaService.survivor.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return survivors.map(PrismaSurvivorsMapper.toDomain);
+  }
+
+  async count(): Promise<number> {
+    return this.prismaService.survivor.count();
   }
 
   async create(data: CreateSurvivorParams): Promise<Survivor> {

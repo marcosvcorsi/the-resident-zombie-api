@@ -1,4 +1,5 @@
 import { GetSurvivorService } from '@/domain/services/get-survivor';
+import { ListSurvivorsService } from '@/domain/services/list-survivors';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
@@ -46,6 +47,13 @@ import { SurvivorsResolver } from './resolvers/survivors';
       inject: [PrismaSurvivorsRepository],
       useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
         return new GetSurvivorService(prismaSurvivorRepository);
+      },
+    },
+    {
+      provide: ListSurvivorsService,
+      inject: [PrismaSurvivorsRepository],
+      useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
+        return new ListSurvivorsService(prismaSurvivorRepository);
       },
     },
     SurvivorsResolver,

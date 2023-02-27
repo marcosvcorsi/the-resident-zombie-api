@@ -9,7 +9,14 @@ async function bootstrap() {
   app.enableCors();
   app.setGlobalPrefix('api');
   app.enableVersioning();
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('TRZ - The Resident Zombie')

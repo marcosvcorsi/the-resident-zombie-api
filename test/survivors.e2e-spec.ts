@@ -22,7 +22,7 @@ describe('SurvivorsController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    prismaService.survivor.deleteMany();
+    await prismaService.survivor.deleteMany();
   });
 
   afterAll(async () => {
@@ -94,6 +94,30 @@ describe('SurvivorsController (e2e)', () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject(data);
+    });
+  });
+
+  describe('GET /survivors/', () => {
+    it('should get survivors', async () => {
+      const data = {
+        name: 'any_name',
+        age: 18,
+        gender: 'male',
+        latitude: 1,
+        longitude: 1,
+      };
+
+      await prismaService.survivor.create({
+        data,
+      });
+
+      const response = await request(app.getHttpServer()).get(`/survivors`);
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toEqual({
+        total: 1,
+        data: [expect.objectContaining(data)],
+      });
     });
   });
 });
