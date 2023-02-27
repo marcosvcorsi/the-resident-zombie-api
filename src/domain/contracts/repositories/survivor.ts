@@ -28,3 +28,7 @@ export abstract class FindAllSurvivorsRepository {
 export abstract class CountAllSurvivorsRepository {
   abstract count(): Promise<number>;
 }
+
+export abstract class DeleteSurvivorRepository {
+  abstract delete(id: string): Promise<Survivor>;
+}
