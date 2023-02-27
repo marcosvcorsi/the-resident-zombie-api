@@ -6,17 +6,21 @@ import {
   UpdateSurvivorInput,
 } from '../schema/survivor';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
+import { GetSurvivorService } from '@/domain/services/get-survivor';
 
 @Resolver()
 export class SurvivorsResolver {
   constructor(
     private readonly createSurvivorService: CreateSurvivorService,
     private readonly updateSurvivorService: UpdateSurvivorService,
+    private readonly getSurvivorService: GetSurvivorService,
   ) {}
 
-  @Query(() => String)
-  sayHello(): string {
-    return 'Hello World!';
+  @Query(() => Survivor)
+  async survivor(@Args('id') id: string) {
+    const { survivor } = await this.getSurvivorService.execute({ id });
+
+    return survivor;
   }
 
   @Mutation(() => Survivor)
