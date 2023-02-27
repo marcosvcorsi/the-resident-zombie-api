@@ -15,3 +15,16 @@ export abstract class UpdateSurvivorRepository {
 export abstract class FindSurvivorRepository {
   abstract find(id: string): Promise<Survivor | null>;
 }
+
+export type FindAllSurvivorsParams = {
+  page: number;
+  limit: number;
+};
+
+export abstract class FindAllSurvivorsRepository {
+  abstract findAll(data: FindAllSurvivorsParams): Promise<Survivor[]>;
+}
+
+export abstract class CountAllSurvivorsRepository {
+  abstract count(): Promise<number>;
+}
