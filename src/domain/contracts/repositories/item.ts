@@ -5,10 +5,10 @@ export type FindAllItemsParams = {
   limit: number;
 };
 
-export abstract class FindAllItemsRepository {
-  abstract findAll(data: FindAllItemsParams): Promise<Item[]>;
+export interface FindAllItemsRepository {
+  findAll(data: FindAllItemsParams): Promise<Item[]>;
 }
 
-export abstract class CountAllItemsRepository {
-  abstract count(): Promise<number>;
+export interface CountAllItemsRepository {
+  count(): Promise<number>;
 }

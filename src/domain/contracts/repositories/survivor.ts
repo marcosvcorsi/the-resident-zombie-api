@@ -12,20 +12,20 @@ export type CreateSurvivorParams = {
   }[];
 };
 
-export abstract class CreateSurvivorRepository {
-  abstract create(data: CreateSurvivorParams): Promise<Survivor>;
+export interface CreateSurvivorRepository {
+  create(data: CreateSurvivorParams): Promise<Survivor>;
 }
 
 export type UpdateSurvivorParams = Partial<
   Omit<CreateSurvivorParams, 'inventory'>
 >;
 
-export abstract class UpdateSurvivorRepository {
-  abstract update(id: string, data: UpdateSurvivorParams): Promise<Survivor>;
+export interface UpdateSurvivorRepository {
+  update(id: string, data: UpdateSurvivorParams): Promise<Survivor>;
 }
 
-export abstract class FindSurvivorRepository {
-  abstract find(id: string): Promise<Survivor | null>;
+export interface FindSurvivorRepository {
+  find(id: string): Promise<Survivor | null>;
 }
 
 export type FindAllSurvivorsParams = {
@@ -33,14 +33,14 @@ export type FindAllSurvivorsParams = {
   limit: number;
 };
 
-export abstract class FindAllSurvivorsRepository {
-  abstract findAll(data: FindAllSurvivorsParams): Promise<Survivor[]>;
+export interface FindAllSurvivorsRepository {
+  findAll(data: FindAllSurvivorsParams): Promise<Survivor[]>;
 }
 
-export abstract class CountAllSurvivorsRepository {
-  abstract count(): Promise<number>;
+export interface CountAllSurvivorsRepository {
+  count(): Promise<number>;
 }
 
-export abstract class DeleteSurvivorRepository {
-  abstract delete(id: string): Promise<Survivor>;
+export interface DeleteSurvivorRepository {
+  delete(id: string): Promise<Survivor>;
 }

@@ -1,6 +1,6 @@
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
-export class ListSurvivorsDto {
+export class PaginatedListDto {
   @IsOptional()
   @IsInt()
   @Min(1)

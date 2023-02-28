@@ -1,20 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Survivor } from '../../../domain/entities/survivor';
+import { ItemViewModel } from './item.view';
 
-class Item {
+class InventoryViewModel {
   @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  points: number;
-}
-
-class Inventory {
-  @ApiProperty()
-  item: Item;
+  item: ItemViewModel;
 
   @ApiProperty()
   quantity: number;
@@ -52,7 +42,7 @@ export class SurvivorViewModel {
   updatedAt?: Date;
 
   @ApiProperty()
-  inventory: Inventory[];
+  inventory: InventoryViewModel[];
 
   static toHttp(survivor: Survivor): SurvivorViewModel {
     return {

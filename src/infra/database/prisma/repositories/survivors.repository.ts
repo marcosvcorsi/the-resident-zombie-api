@@ -54,6 +54,9 @@ export class PrismaSurvivorsRepository
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return survivors.map(PrismaSurvivorsMapper.toDomain);

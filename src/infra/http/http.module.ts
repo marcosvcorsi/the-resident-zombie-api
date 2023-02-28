@@ -1,5 +1,6 @@
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
+import { ListItemsService } from '@/domain/services/list-items';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -7,7 +8,9 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
+import { PrismaItemsRepository } from '../database/prisma/repositories/items.repositoty';
 import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survivors.repository';
+import { ItemsController } from './controllers/items.controller';
 import { SurvivorsController } from './controllers/survivors.controller';
 import { HealthModule } from './health.module';
 import { SurvivorsResolver } from './resolvers/survivors';
@@ -22,7 +25,7 @@ import { SurvivorsResolver } from './resolvers/survivors';
     }),
     HealthModule,
   ],
-  controllers: [SurvivorsController],
+  controllers: [SurvivorsController, ItemsController],
   providers: [
     {
       provide: CreateSurvivorService,
@@ -57,6 +60,13 @@ import { SurvivorsResolver } from './resolvers/survivors';
       inject: [PrismaSurvivorsRepository],
       useFactory: (prismaSurvivorRepository: PrismaSurvivorsRepository) => {
         return new DeleteSurvivorService(prismaSurvivorRepository);
+      },
+    },
+    {
+      provide: ListItemsService,
+      inject: [PrismaItemsRepository],
+      useFactory: (prismaItemsRepository: PrismaItemsRepository) => {
+        return new ListItemsService(prismaItemsRepository);
       },
     },
     SurvivorsResolver,
