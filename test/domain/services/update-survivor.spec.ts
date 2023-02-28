@@ -2,7 +2,7 @@ import {
   FindSurvivorRepository,
   UpdateSurvivorRepository,
 } from '@/domain/contracts/repositories/survivor';
-import { SurvivorNotFoundError } from '@/domain/errors/survivor';
+import { NotFoundError } from '@/domain/errors';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -51,7 +51,7 @@ describe('UpdateSurvivorService', () => {
     survivorRepository.find.mockResolvedValueOnce(null);
 
     await expect(updateSurvivorService.execute(input)).rejects.toBeInstanceOf(
-      SurvivorNotFoundError,
+      NotFoundError,
     );
   });
 

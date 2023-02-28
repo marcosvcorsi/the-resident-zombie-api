@@ -1,5 +1,5 @@
 import { FindSurvivorRepository } from '@/domain/contracts/repositories/survivor';
-import { SurvivorNotFoundError } from '@/domain/errors/survivor';
+import { NotFoundError } from '@/domain/errors';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -42,7 +42,7 @@ describe('GetSurvivorService', () => {
     survivorRepository.find.mockResolvedValueOnce(null);
 
     await expect(getSurvivorService.execute(input)).rejects.toBeInstanceOf(
-      SurvivorNotFoundError,
+      NotFoundError,
     );
   });
 

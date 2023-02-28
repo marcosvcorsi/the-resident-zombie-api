@@ -1,4 +1,3 @@
-import { SurvivorNotFoundError } from '@/domain/errors/survivor';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
@@ -9,8 +8,6 @@ import {
   Delete,
   Get,
   HttpStatus,
-  InternalServerErrorException,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -35,14 +32,6 @@ export class SurvivorsController {
     private readonly deleteSurvivorService: DeleteSurvivorService,
   ) {}
 
-  private handleSurvivorNotFoundError(error: unknown) {
-    if (error instanceof SurvivorNotFoundError) {
-      throw new NotFoundException(error.message);
-    }
-
-    throw new InternalServerErrorException(error);
-  }
-
   @Post()
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -61,16 +50,12 @@ export class SurvivorsController {
   })
   @ApiResponse({ status: HttpStatus.NOT_FOUND })
   async update(@Param('id') id: string, @Body() data: UpdateSurvivorDto) {
-    try {
-      const { survivor } = await this.updateSurvivorService.execute({
-        id,
-        ...data,
-      });
+    const { survivor } = await this.updateSurvivorService.execute({
+      id,
+      ...data,
+    });
 
-      return SurvivorViewModel.toHttp(survivor);
-    } catch (error) {
-      this.handleSurvivorNotFoundError(error);
-    }
+    return SurvivorViewModel.toHttp(survivor);
   }
 
   @Get('/:id')
@@ -80,13 +65,9 @@ export class SurvivorsController {
   })
   @ApiResponse({ status: HttpStatus.NOT_FOUND })
   async get(@Param('id') id: string) {
-    try {
-      const { survivor } = await this.getSurvivorService.execute({ id });
+    const { survivor } = await this.getSurvivorService.execute({ id });
 
-      return SurvivorViewModel.toHttp(survivor);
-    } catch (error) {
-      this.handleSurvivorNotFoundError(error);
-    }
+    return SurvivorViewModel.toHttp(survivor);
   }
 
   @Delete('/:id')
@@ -95,13 +76,9 @@ export class SurvivorsController {
     type: SurvivorViewModel,
   })
   async delete(@Param('id') id: string) {
-    try {
-      const { survivor } = await this.deleteSurvivorService.execute({ id });
+    const { survivor } = await this.deleteSurvivorService.execute({ id });
 
-      return SurvivorViewModel.toHttp(survivor);
-    } catch (error) {
-      this.handleSurvivorNotFoundError(error);
-    }
+    return SurvivorViewModel.toHttp(survivor);
   }
 
   @Get()

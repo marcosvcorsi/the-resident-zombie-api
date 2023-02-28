@@ -1,6 +1,6 @@
 import { FindSurvivorRepository } from '../contracts/repositories/survivor';
 import { Survivor } from '../entities/survivor';
-import { SurvivorNotFoundError } from '../errors/survivor';
+import { NotFoundError } from '../errors';
 
 export type GetSurvivorInput = {
   id: string;
@@ -17,7 +17,7 @@ export class GetSurvivorService {
     const survivor = await this.survivorsRepository.find(id);
 
     if (!survivor) {
-      throw new SurvivorNotFoundError();
+      throw new NotFoundError('Survivor');
     }
 
     return { survivor };

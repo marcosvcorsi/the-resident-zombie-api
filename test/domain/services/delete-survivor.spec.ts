@@ -2,7 +2,7 @@ import {
   DeleteSurvivorRepository,
   FindSurvivorRepository,
 } from '@/domain/contracts/repositories/survivor';
-import { SurvivorNotFoundError } from '@/domain/errors/survivor';
+import { NotFoundError } from '@/domain/errors';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
 
@@ -40,7 +40,7 @@ describe('DeleteSurvivorService', () => {
     survivorsRepository.find.mockResolvedValueOnce(null);
 
     await expect(deleteSurvivorService.execute(input)).rejects.toBeInstanceOf(
-      SurvivorNotFoundError,
+      NotFoundError,
     );
   });
 

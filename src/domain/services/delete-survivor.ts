@@ -3,7 +3,7 @@ import {
   FindSurvivorRepository,
 } from '../contracts/repositories/survivor';
 import { Survivor } from '../entities/survivor';
-import { SurvivorNotFoundError } from '../errors/survivor';
+import { NotFoundError } from '../errors';
 
 export type DeleteSurvivorInput = {
   id: string;
@@ -23,7 +23,7 @@ export class DeleteSurvivorService {
     let survivor = await this.survivorsRepository.find(id);
 
     if (!survivor) {
-      throw new SurvivorNotFoundError();
+      throw new NotFoundError('Survivor');
     }
 
     survivor = await this.survivorsRepository.delete(id);
