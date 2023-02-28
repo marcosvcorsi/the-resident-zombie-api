@@ -2,14 +2,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
-import * as csurf from 'csurf';
 import { AppModule } from './app.module';
+import { ServerErrorFilter } from './infra/http/filters/error.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
-  app.use(csurf());
   app.enableCors();
   app.setGlobalPrefix('api');
   app.enableVersioning();
@@ -21,6 +20,7 @@ async function bootstrap() {
       },
     }),
   );
+  app.useGlobalFilters(new ServerErrorFilter());
 
   const config = new DocumentBuilder()
     .setTitle('TRZ - The Resident Zombie')
