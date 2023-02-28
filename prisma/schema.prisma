@@ -22,3 +22,11 @@ model Survivor {
 
   @@map("survivors")
 }
+
+model Item {
+  id     String @id @default(uuid())
+  name   String
+  points Int
+
+  @@map("items")
+}
