@@ -1,3 +1,4 @@
+import { Item } from '@/domain/entities/item';
 import { Gender, Survivor } from '@/domain/entities/survivor';
 
 export const mockSurvivor = (props: Partial<Survivor> = {}): Survivor => ({
@@ -9,5 +10,12 @@ export const mockSurvivor = (props: Partial<Survivor> = {}): Survivor => ({
   latitude: 1,
   longitude: 1,
   inventory: [],
+  ...props,
+});
+
+export const mockItem = (props: Partial<Item> = {}): Item => ({
+  id: 'any_id',
+  name: 'any_item',
+  points: 1,
   ...props,
 });
