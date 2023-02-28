@@ -22,7 +22,7 @@ export class PrismaSurvivorsMapper {
       name: survivor.name,
       createdAt: survivor.createdAt,
       updatedAt: survivor.updatedAt,
-      inventory: survivor.inventory?.map((inv) => ({
+      inventory: survivor.inventory.map((inv) => ({
         item: inv.item,
         quantity: inv.quantity,
         createdAt: inv.createdAt,

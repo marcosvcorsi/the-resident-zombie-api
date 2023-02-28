@@ -47,6 +47,13 @@ export class PrismaSurvivorsRepository
     const survivors = await this.prismaService.survivor.findMany({
       take: limit,
       skip: (page - 1) * limit,
+      include: {
+        inventory: {
+          include: {
+            item: true,
+          },
+        },
+      },
     });
 
     return survivors.map(PrismaSurvivorsMapper.toDomain);

@@ -1,6 +1,8 @@
 import { Gender } from '@/domain/entities/survivor';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   IsArray,
   IsEnum,
   IsInt,
@@ -53,7 +55,8 @@ export class CreateSurvivorDto {
   longitude: number;
 
   @IsArray()
-  @MinLength(1)
-  @ValidateNested()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => Inventory)
   inventory: Inventory[];
 }
