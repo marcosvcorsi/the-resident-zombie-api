@@ -12,6 +12,7 @@ describe('CreateSurvivorService', () => {
     name: 'any_name',
     latitude: 1,
     longitude: 1,
+    createdAt: new Date(),
   };
 
   beforeAll(() => {

@@ -26,6 +26,7 @@ describe('UpdateSurvivorService', () => {
       age: 18,
       name: 'any_name',
       gender: 'male',
+      createdAt: new Date(),
     };
 
     survivorRepository.find.mockResolvedValue(survivor);

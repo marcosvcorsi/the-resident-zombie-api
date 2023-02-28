@@ -23,6 +23,7 @@ describe('ListSurvivorsService', () => {
     age: 18,
     latitude: 1,
     longitude: 1,
+    createdAt: new Date(),
   };
 
   beforeAll(() => {

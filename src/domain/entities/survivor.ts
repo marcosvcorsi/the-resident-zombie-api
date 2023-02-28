@@ -5,4 +5,6 @@ export type Survivor = {
   gender: string;
   latitude: number;
   longitude: number;
+  createdAt: Date;
+  updatedAt?: Date;
 };
