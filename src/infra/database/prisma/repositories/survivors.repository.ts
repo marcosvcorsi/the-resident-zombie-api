@@ -8,6 +8,7 @@ import {
   FindAllSurvivorsParams,
   FindAllSurvivorsRepository,
   FindSurvivorRepository,
+  UpdateSurvivorParams,
   UpdateSurvivorRepository,
 } from '../../../../domain/contracts/repositories/survivor';
 import { PrismaSurvivorsMapper } from '../mappers/survivor.mapper';
@@ -30,6 +31,13 @@ export class PrismaSurvivorsRepository
       where: {
         id,
       },
+      include: {
+        inventory: {
+          include: {
+            item: true,
+          },
+        },
+      },
     });
 
     return survivor ? PrismaSurvivorsMapper.toDomain(survivor) : null;
@@ -48,23 +56,47 @@ export class PrismaSurvivorsRepository
     return this.prismaService.survivor.count();
   }
 
-  async create(data: CreateSurvivorParams): Promise<Survivor> {
+  async create({
+    inventory,
+    ...rest
+  }: CreateSurvivorParams): Promise<Survivor> {
     const survivor = await this.prismaService.survivor.create({
-      data,
+      data: {
+        ...rest,
+        inventory: {
+          createMany: {
+            data: inventory.map((item) => ({
+              itemId: item.itemId,
+              quantity: item.quantity,
+            })),
+          },
+        },
+      },
+      include: {
+        inventory: {
+          include: {
+            item: true,
+          },
+        },
+      },
     });
 
     return PrismaSurvivorsMapper.toDomain(survivor);
   }
 
-  async update(
-    id: string,
-    data: Partial<Omit<Survivor, 'id'>>,
-  ): Promise<Survivor> {
+  async update(id: string, data: UpdateSurvivorParams): Promise<Survivor> {
     const survivor = await this.prismaService.survivor.update({
       where: {
         id,
       },
       data,
+      include: {
+        inventory: {
+          include: {
+            item: true,
+          },
+        },
+      },
     });
 
     return PrismaSurvivorsMapper.toDomain(survivor);
@@ -74,6 +106,13 @@ export class PrismaSurvivorsRepository
     const survivor = await this.prismaService.survivor.delete({
       where: {
         id,
+      },
+      include: {
+        inventory: {
+          include: {
+            item: true,
+          },
+        },
       },
     });
 

@@ -10,23 +10,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model Survivor {
-  id        String   @id @default(uuid())
-  name      String
-  age       Int
-  gender    String
-  latitude  Float
-  longitude Float
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         String      @id @default(uuid())
+  name       String
+  age        Int
+  gender     Gender
+  latitude   Float
+  longitude  Float
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  infectedAt DateTime?   @map("infected_at")
+  inventory  Inventory[]
 
   @@map("survivors")
 }
 
 model Item {
-  id     String @id @default(uuid())
-  name   String
-  points Int
+  id        String      @id @default(uuid())
+  name      String
+  points    Int
+  Inventory Inventory[]
 
   @@map("items")
+}
+
+model Inventory {
+  survivor   Survivor @relation(fields: [survivorId], references: [id])
+  survivorId String
+  item       Item     @relation(fields: [itemId], references: [id])
+  itemId     String
+  quantity   Int
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@id([survivorId, itemId])
+  @@map("inventories")
 }

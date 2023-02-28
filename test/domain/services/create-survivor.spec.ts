@@ -1,6 +1,8 @@
 import { CreateSurvivorRepository } from '@/domain/contracts/repositories/survivor';
+import { Gender } from '@/domain/entities/survivor';
 import { CreateSurvivorService } from '@/domain/services/create-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { mockSurvivor } from '../../../test/mocks';
 
 describe('CreateSurvivorService', () => {
   let repository: MockProxy<CreateSurvivorRepository>;
@@ -8,20 +10,22 @@ describe('CreateSurvivorService', () => {
 
   const input = {
     age: 18,
-    gender: 'male',
-    name: 'any_name',
+    gender: Gender.MALE,
+    name: 'any name',
     latitude: 1,
     longitude: 1,
-    createdAt: new Date(),
+    inventory: [
+      {
+        itemId: 'any_id',
+        quantity: 1,
+      },
+    ],
   };
 
   beforeAll(() => {
     repository = mock();
 
-    repository.create.mockResolvedValue({
-      id: 'any_id',
-      ...input,
-    });
+    repository.create.mockResolvedValue(mockSurvivor());
   });
 
   beforeEach(() => {
@@ -33,7 +37,10 @@ describe('CreateSurvivorService', () => {
 
     expect(repository.create).toHaveBeenCalledTimes(1);
     expect(repository.create).toHaveBeenCalledWith(input);
-    expect(response.survivor).toMatchObject(input);
+    expect(response.survivor).toMatchObject({
+      ...input,
+      inventory: [],
+    });
   });
 
   it('should throw if CreateSurvivorRepository create throws', async () => {

@@ -5,6 +5,7 @@ import {
 import { NotFoundError } from '@/domain/errors';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { mockSurvivor } from '../../../test/mocks';
 
 describe('DeleteSurvivorService', () => {
   let survivorsRepository: MockProxy<
@@ -17,13 +18,8 @@ describe('DeleteSurvivorService', () => {
   };
 
   const survivor = {
+    ...mockSurvivor(),
     ...input,
-    name: 'any_name',
-    gender: 'male',
-    age: 18,
-    latitude: 1,
-    longitude: 1,
-    createdAt: new Date(),
   };
 
   beforeAll(() => {

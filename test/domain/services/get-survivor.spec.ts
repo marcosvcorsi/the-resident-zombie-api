@@ -2,6 +2,7 @@ import { FindSurvivorRepository } from '@/domain/contracts/repositories/survivor
 import { NotFoundError } from '@/domain/errors';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { mockSurvivor } from '../../../test/mocks';
 
 describe('GetSurvivorService', () => {
   let survivorRepository: MockProxy<FindSurvivorRepository>;
@@ -17,11 +18,8 @@ describe('GetSurvivorService', () => {
     survivorRepository = mock();
 
     const survivor = {
+      ...mockSurvivor(),
       ...input,
-      age: 18,
-      name: 'any_name',
-      gender: 'male',
-      createdAt: new Date(),
     };
 
     survivorRepository.find.mockResolvedValue(survivor);

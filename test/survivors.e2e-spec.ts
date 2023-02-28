@@ -3,10 +3,14 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { HttpModule } from '@/infra/http/http.module';
 import { PrismaService } from '@/infra/database/prisma/prisma.service';
+import { Gender } from '@/domain/entities/survivor';
+import { Item } from '@prisma/client';
 
 describe('SurvivorsController (e2e)', () => {
   let prismaService: PrismaService;
   let app: INestApplication;
+
+  let item: Item;
 
   beforeAll(async () => {
     prismaService = new PrismaService();
@@ -22,7 +26,16 @@ describe('SurvivorsController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
+    await prismaService.inventory.deleteMany();
+    await prismaService.item.deleteMany();
     await prismaService.survivor.deleteMany();
+
+    item = await prismaService.item.create({
+      data: {
+        name: 'Item',
+        points: 10,
+      },
+    });
   });
 
   afterAll(async () => {
@@ -34,9 +47,15 @@ describe('SurvivorsController (e2e)', () => {
       const payload = {
         name: 'any_name',
         age: 10,
-        gender: 'male',
+        gender: Gender.MALE,
         latitude: 1,
         longitude: 1,
+        inventory: [
+          {
+            itemId: item.id,
+            quantity: 1,
+          },
+        ],
       };
 
       const response = await request(app.getHttpServer())
@@ -44,7 +63,15 @@ describe('SurvivorsController (e2e)', () => {
         .send(payload);
 
       expect(response.statusCode).toBe(201);
-      expect(response.body).toMatchObject(payload);
+      expect(response.body).toMatchObject({
+        ...payload,
+        inventory: expect.arrayContaining([
+          expect.objectContaining({
+            item,
+            quantity: 1,
+          }),
+        ]),
+      });
     });
   });
 
@@ -54,7 +81,7 @@ describe('SurvivorsController (e2e)', () => {
         data: {
           name: 'any_name',
           age: 18,
-          gender: 'male',
+          gender: Gender.MALE,
           latitude: 1,
           longitude: 1,
         },
@@ -79,9 +106,15 @@ describe('SurvivorsController (e2e)', () => {
       const data = {
         name: 'any_name',
         age: 18,
-        gender: 'male',
+        gender: Gender.MALE,
         latitude: 1,
         longitude: 1,
+        inventory: {
+          create: {
+            itemId: item.id,
+            quantity: 1,
+          },
+        },
       };
 
       const survivor = await prismaService.survivor.create({
@@ -93,7 +126,15 @@ describe('SurvivorsController (e2e)', () => {
       );
 
       expect(response.statusCode).toBe(200);
-      expect(response.body).toMatchObject(data);
+      expect(response.body).toMatchObject({
+        ...data,
+        inventory: expect.arrayContaining([
+          expect.objectContaining({
+            item,
+            quantity: 1,
+          }),
+        ]),
+      });
     });
   });
 
@@ -102,7 +143,7 @@ describe('SurvivorsController (e2e)', () => {
       const data = {
         name: 'any_name',
         age: 18,
-        gender: 'male',
+        gender: Gender.MALE,
         latitude: 1,
         longitude: 1,
       };
@@ -126,7 +167,7 @@ describe('SurvivorsController (e2e)', () => {
       const data = {
         name: 'any_name',
         age: 18,
-        gender: 'male',
+        gender: Gender.MALE,
         latitude: 1,
         longitude: 1,
       };

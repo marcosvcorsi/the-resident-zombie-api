@@ -1,12 +1,24 @@
-import { Survivor } from '../../entities/survivor';
+import { Gender, Survivor } from '../../entities/survivor';
 
-export type CreateSurvivorParams = Omit<Survivor, 'id' | 'createdAt'>;
+export type CreateSurvivorParams = {
+  name: string;
+  gender: Gender;
+  age: number;
+  latitude: number;
+  longitude: number;
+  inventory?: {
+    itemId: string;
+    quantity: number;
+  }[];
+};
 
 export abstract class CreateSurvivorRepository {
   abstract create(data: CreateSurvivorParams): Promise<Survivor>;
 }
 
-export type UpdateSurvivorParams = Partial<Omit<Survivor, 'id' | 'createdAt'>>;
+export type UpdateSurvivorParams = Partial<
+  Omit<CreateSurvivorParams, 'inventory'>
+>;
 
 export abstract class UpdateSurvivorRepository {
   abstract update(id: string, data: UpdateSurvivorParams): Promise<Survivor>;

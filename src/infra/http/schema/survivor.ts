@@ -1,3 +1,4 @@
+import { Gender } from '@/domain/entities/survivor';
 import {
   ArgsType,
   Field,
@@ -7,6 +8,7 @@ import {
   ObjectType,
 } from '@nestjs/graphql';
 import {
+  IsEnum,
   IsInt,
   IsLatitude,
   IsLongitude,
@@ -14,6 +16,7 @@ import {
   IsNumber,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator';
 
 @ObjectType()
@@ -56,6 +59,20 @@ export class SurvivorsArgs {
 }
 
 @InputType()
+export class CreateSurvivorInventoryInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID('4')
+  itemId: string;
+
+  @Field()
+  @IsInt()
+  @IsNotEmpty()
+  quantity: number;
+}
+
+@InputType()
 export class CreateSurvivorInput {
   @Field()
   @IsString()
@@ -63,9 +80,9 @@ export class CreateSurvivorInput {
   name: string;
 
   @Field()
-  @IsString()
+  @IsEnum(Gender)
   @IsNotEmpty()
-  gender: string;
+  gender: Gender;
 
   @Field()
   @IsInt()
@@ -83,6 +100,10 @@ export class CreateSurvivorInput {
   @IsLongitude()
   @IsNotEmpty()
   longitude: number;
+
+  @Field(() => [CreateSurvivorInput])
+  @ValidateNested()
+  inventory: CreateSurvivorInventoryInput[];
 }
 
 @InputType()

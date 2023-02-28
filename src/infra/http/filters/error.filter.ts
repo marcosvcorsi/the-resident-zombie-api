@@ -4,11 +4,14 @@ import {
   Catch,
   ArgumentsHost,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch(ServerError)
 export class ServerErrorFilter implements ExceptionFilter {
+  private logger: Logger = new Logger(ServerErrorFilter.name);
+
   catch(exception: ServerError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -20,6 +23,8 @@ export class ServerErrorFilter implements ExceptionFilter {
     } else {
       status = HttpStatus.BAD_REQUEST;
     }
+
+    this.logger.error(exception.message, exception.stack, exception);
 
     return response.status(status).json({
       statusCode: status,

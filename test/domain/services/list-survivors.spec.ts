@@ -4,6 +4,7 @@ import {
 } from '@/domain/contracts/repositories/survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { mockSurvivor } from '../../../test/mocks';
 
 describe('ListSurvivorsService', () => {
   let survivorsRepository: MockProxy<
@@ -16,15 +17,7 @@ describe('ListSurvivorsService', () => {
     limit: 20,
   };
 
-  const survivor = {
-    id: 'any_id',
-    name: 'any_name',
-    gender: 'any_gender',
-    age: 18,
-    latitude: 1,
-    longitude: 1,
-    createdAt: new Date(),
-  };
+  const survivor = mockSurvivor();
 
   beforeAll(() => {
     survivorsRepository = mock();

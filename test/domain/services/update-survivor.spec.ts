@@ -5,6 +5,7 @@ import {
 import { NotFoundError } from '@/domain/errors';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { mock, MockProxy } from 'jest-mock-extended';
+import { mockSurvivor } from '../../../test/mocks';
 
 describe('UpdateSurvivorService', () => {
   let survivorRepository: MockProxy<
@@ -22,11 +23,8 @@ describe('UpdateSurvivorService', () => {
     survivorRepository = mock();
 
     const survivor = {
+      ...mockSurvivor(),
       ...input,
-      age: 18,
-      name: 'any_name',
-      gender: 'male',
-      createdAt: new Date(),
     };
 
     survivorRepository.find.mockResolvedValue(survivor);

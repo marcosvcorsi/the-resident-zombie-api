@@ -1,12 +1,16 @@
 import { CreateSurvivorRepository } from '../contracts/repositories/survivor';
-import { Survivor } from '../entities/survivor';
+import { Gender, Survivor } from '../entities/survivor';
 
 type CreateSurvivorInput = {
   name: string;
   age: number;
-  gender: string;
+  gender: Gender;
   latitude: number;
   longitude: number;
+  inventory: {
+    itemId: string;
+    quantity: number;
+  }[];
 };
 
 type CreateSurvivorOutput = {

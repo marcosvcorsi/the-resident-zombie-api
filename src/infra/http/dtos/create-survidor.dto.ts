@@ -1,5 +1,29 @@
+import { Gender } from '@/domain/entities/survivor';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Min,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+
+class Inventory {
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID('4')
+  itemId: string;
+
+  @IsInt()
+  @Min(1)
+  @IsNotEmpty()
+  quantity: number;
+}
 
 export class CreateSurvivorDto {
   @ApiProperty()
@@ -14,9 +38,9 @@ export class CreateSurvivorDto {
   age: number;
 
   @ApiProperty()
-  @IsString()
+  @IsEnum(Gender)
   @IsNotEmpty()
-  gender: string;
+  gender: Gender;
 
   @ApiProperty()
   @IsNumber()
@@ -27,4 +51,9 @@ export class CreateSurvivorDto {
   @IsNumber()
   @IsNotEmpty()
   longitude: number;
+
+  @IsArray()
+  @MinLength(1)
+  @ValidateNested()
+  inventory: Inventory[];
 }
