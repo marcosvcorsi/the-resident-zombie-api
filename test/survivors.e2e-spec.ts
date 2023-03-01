@@ -188,6 +188,16 @@ describe('SurvivorsController (e2e)', () => {
 
   describe('POST /survivors/:id/reports', () => {
     it('should create a new survivor report', async () => {
+      const reporter = await prismaService.survivor.create({
+        data: {
+          name: 'any_name',
+          age: 18,
+          gender: Gender.MALE,
+          latitude: 1,
+          longitude: 1,
+        },
+      });
+
       const survivor = await prismaService.survivor.create({
         data: {
           name: 'any_name',
@@ -198,9 +208,9 @@ describe('SurvivorsController (e2e)', () => {
         },
       });
 
-      const response = await request(app.getHttpServer()).post(
-        `/survivors/${survivor.id}/reports`,
-      );
+      const response = await request(app.getHttpServer())
+        .post(`/survivors/${survivor.id}/reports`)
+        .set('Authorization', reporter.id);
 
       expect(response.statusCode).toBe(201);
       expect(response.body).toMatchObject({

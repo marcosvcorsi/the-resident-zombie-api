@@ -1,34 +1,27 @@
 import { Report } from '@/domain/entities/report';
-import { Gender } from '@/domain/entities/survivor';
 import {
   Inventory as PrismaInventory,
   Item as PrismaItem,
   Report as PrismaReport,
   Survivor as PrismaSurvivor,
 } from '@prisma/client';
+import { PrismaSurvivorsMapper } from './survivor.mapper';
 
 type Inventory = PrismaInventory & { item: PrismaItem };
+type Survivor = PrismaSurvivor & { inventory: Inventory[] };
 
 export class PrismaReportsMapper {
   static toDomain(
     report: PrismaReport & {
-      survivor: PrismaSurvivor & { inventory: Inventory[] };
-    },
+      survivor: Survivor;
+    } & { reporter: Survivor },
   ): Report {
-    const { survivor } = report;
+    const { survivor, reporter } = report;
 
     return {
       ...report,
-      survivor: {
-        ...survivor,
-        gender: survivor.gender as Gender,
-        inventory: survivor.inventory.map((inv) => ({
-          item: inv.item,
-          createdAt: inv.createdAt,
-          quantity: inv.quantity,
-          updatedAt: inv.updatedAt,
-        })),
-      },
+      survivor: PrismaSurvivorsMapper.toDomain(survivor),
+      reporter: PrismaSurvivorsMapper.toDomain(reporter),
     };
   }
 }

@@ -1,12 +1,13 @@
 import {
   CountReportsBySurvivorRepository,
   CreateReportRepository,
+  FindUniqueReportRepository,
 } from '@/domain/contracts/repositories/report';
 import {
   FindSurvivorRepository,
   UpdateSurvivorRepository,
 } from '@/domain/contracts/repositories/survivor';
-import { NotFoundError } from '@/domain/errors';
+import { NotFoundError, ServerError } from '@/domain/errors';
 import { CreateReportService } from '@/domain/services/create-report';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { mockReport, mockSurvivor } from '../../../test/mocks';
@@ -17,21 +18,27 @@ describe('CreateReportService', () => {
     FindSurvivorRepository & UpdateSurvivorRepository
   >;
   let reportsRepository: MockProxy<
-    CreateReportRepository & CountReportsBySurvivorRepository
+    CreateReportRepository &
+      CountReportsBySurvivorRepository &
+      FindUniqueReportRepository
   >;
 
   const input = {
     survivorId: 'any_id',
+    reporterId: 'any_reporter_id',
   };
 
   beforeAll(() => {
     survivorsRepository = mock();
     reportsRepository = mock();
 
-    survivorsRepository.find.mockResolvedValue(mockSurvivor());
+    survivorsRepository.find
+      .mockResolvedValue(mockSurvivor())
+      .mockResolvedValue(mockSurvivor({ id: 'any_reporter_id' }));
     survivorsRepository.update.mockResolvedValue(mockSurvivor());
 
     reportsRepository.create.mockResolvedValue(mockReport());
+    reportsRepository.findUnique.mockResolvedValue(null);
     reportsRepository.countBySurvivor.mockResolvedValue(0);
   });
 
@@ -42,11 +49,38 @@ describe('CreateReportService', () => {
     );
   });
 
-  it('should throw an error if survivor does not exists', async () => {
+  it('should throw an error if reporter does not exists', async () => {
     survivorsRepository.find.mockResolvedValueOnce(null);
 
     await expect(createReportService.execute(input)).rejects.toBeInstanceOf(
       NotFoundError,
+    );
+  });
+
+  it('should throw an error if survivor does not exists', async () => {
+    survivorsRepository.find
+      .mockResolvedValueOnce(mockSurvivor())
+      .mockResolvedValueOnce(null);
+
+    await expect(createReportService.execute(input)).rejects.toBeInstanceOf(
+      NotFoundError,
+    );
+  });
+
+  it('should throw an error if reporter is equal to survivor', async () => {
+    await expect(
+      createReportService.execute({
+        ...input,
+        reporterId: input.survivorId,
+      }),
+    ).rejects.toBeInstanceOf(ServerError);
+  });
+
+  it('should throw an error if report already exists', async () => {
+    reportsRepository.findUnique.mockResolvedValueOnce(mockReport());
+
+    await expect(createReportService.execute(input)).rejects.toBeInstanceOf(
+      ServerError,
     );
   });
 
@@ -80,9 +114,11 @@ describe('CreateReportService', () => {
 
   it('should be able to create a new report and not update survivor to infected', async () => {
     reportsRepository.countBySurvivor.mockResolvedValueOnce(5);
-    survivorsRepository.find.mockResolvedValueOnce(
-      mockSurvivor({ infectedAt: new Date() }),
-    );
+    survivorsRepository.find
+      .mockResolvedValueOnce(mockSurvivor({ infectedAt: new Date() }))
+      .mockResolvedValueOnce(
+        mockSurvivor({ id: 'any_reporter_id', infectedAt: new Date() }),
+      );
 
     const response = await createReportService.execute(input);
 

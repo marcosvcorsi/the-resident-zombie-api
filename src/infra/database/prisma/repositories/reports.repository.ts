@@ -3,6 +3,8 @@ import {
   CountReportsBySurvivorRepository,
   CreateReportParams,
   CreateReportRepository,
+  FindUniqueReportParams,
+  FindUniqueReportRepository,
 } from '@/domain/contracts/repositories/report';
 import { Report } from '@/domain/entities/report';
 import { Injectable } from '@nestjs/common';
@@ -11,7 +13,10 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class PrismaReportsRepository
-  implements CreateReportRepository, CountReportsBySurvivorRepository
+  implements
+    CreateReportRepository,
+    CountReportsBySurvivorRepository,
+    FindUniqueReportRepository
 {
   constructor(private readonly prismaService: PrismaService) {}
 
@@ -28,11 +33,21 @@ export class PrismaReportsRepository
             },
           },
         },
+        reporter: {
+          include: {
+            inventory: {
+              include: {
+                item: true,
+              },
+            },
+          },
+        },
       },
     });
 
     return PrismaReportsMapper.toDomain(report);
   }
+
   async countBySurvivor({
     survivorId,
   }: CountReportsBySurvivorParams): Promise<number> {
@@ -41,5 +56,41 @@ export class PrismaReportsRepository
         survivorId,
       },
     });
+  }
+
+  async findUnique({
+    survivorId,
+    reporterId,
+  }: FindUniqueReportParams): Promise<Report | null> {
+    const report = await this.prismaService.report.findUnique({
+      where: {
+        survivorId_reporterId: {
+          survivorId,
+          reporterId,
+        },
+      },
+      include: {
+        survivor: {
+          include: {
+            inventory: {
+              include: {
+                item: true,
+              },
+            },
+          },
+        },
+        reporter: {
+          include: {
+            inventory: {
+              include: {
+                item: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return report ? PrismaReportsMapper.toDomain(report) : null;
   }
 }

@@ -8,11 +8,13 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpStatus,
   Param,
   Patch,
   Post,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSurvivorService } from '../../../domain/services/create-survivor';
@@ -110,8 +112,18 @@ export class SurvivorsController {
     status: HttpStatus.CREATED,
     type: ReportViewModel,
   })
-  async createReport(@Param('id') survivorId: string) {
-    const { report } = await this.createReportService.execute({ survivorId });
+  async createReport(
+    @Param('id') survivorId: string,
+    @Headers('authorization') reporterId: string,
+  ) {
+    if (!reporterId) {
+      throw new UnauthorizedException();
+    }
+
+    const { report } = await this.createReportService.execute({
+      survivorId,
+      reporterId,
+    });
 
     return report;
   }

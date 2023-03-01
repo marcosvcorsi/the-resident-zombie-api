@@ -16,7 +16,7 @@ export class GetSurvivorService {
   async execute({ id }: GetSurvivorInput): Promise<GetSurvivorOutput> {
     const survivor = await this.survivorsRepository.find(id);
 
-    if (!survivor) {
+    if (!survivor || survivor.infectedAt) {
       throw new NotFoundError('Survivor');
     }
 

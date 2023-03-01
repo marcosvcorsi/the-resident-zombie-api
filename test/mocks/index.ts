@@ -24,6 +24,7 @@ export const mockItem = (props: Partial<Item> = {}): Item => ({
 export const mockReport = (props: Partial<Report> = {}): Report => ({
   id: 'any_report_id',
   survivor: mockSurvivor(),
+  reporter: mockSurvivor({ id: 'any_reporter_id' }),
   createdAt: new Date(),
   ...props,
 });

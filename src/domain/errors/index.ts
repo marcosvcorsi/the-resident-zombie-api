@@ -1,4 +1,10 @@
-export abstract class ServerError extends Error {}
+export class ServerError extends Error {
+  constructor(message: string) {
+    super(message);
+
+    this.name = 'ServerError';
+  }
+}
 
 export class NotFoundError extends ServerError {
   constructor(entity: string) {

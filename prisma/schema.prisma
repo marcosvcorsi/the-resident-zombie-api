@@ -27,6 +27,7 @@ model Survivor {
   infectedAt DateTime?   @map("infected_at")
   inventory  Inventory[]
   reports    Report[]
+  reported   Report[]    @relation("reporters")
 
   @@map("survivors")
 }
@@ -57,8 +58,10 @@ model Report {
   id         String   @id @default(uuid())
   survivor   Survivor @relation(fields: [survivorId], references: [id])
   survivorId String
+  reporter   Survivor @relation("reporters", fields: [reporterId], references: [id])
+  reporterId String
   createdAt  DateTime @default(now()) @map("created_at")
 
-  @@index([survivorId])
+  @@unique([survivorId, reporterId])
   @@map("reports")
 }

@@ -1,16 +1,18 @@
 import {
   CountReportsBySurvivorRepository,
   CreateReportRepository,
+  FindUniqueReportRepository,
 } from '../contracts/repositories/report';
 import {
   FindSurvivorRepository,
   UpdateSurvivorRepository,
 } from '../contracts/repositories/survivor';
 import { Report } from '../entities/report';
-import { NotFoundError } from '../errors';
+import { NotFoundError, ServerError } from '../errors';
 
 export type CreateReportInput = {
   survivorId: string;
+  reporterId: string;
 };
 
 export type CreateReportOutput = {
@@ -24,19 +26,43 @@ export class CreateReportService {
     private readonly survivorsRepository: FindSurvivorRepository &
       UpdateSurvivorRepository,
     private readonly reportsRepository: CreateReportRepository &
-      CountReportsBySurvivorRepository,
+      CountReportsBySurvivorRepository &
+      FindUniqueReportRepository,
   ) {}
 
   async execute({
     survivorId,
+    reporterId,
   }: CreateReportInput): Promise<CreateReportOutput> {
+    const reporter = await this.survivorsRepository.find(reporterId);
+
+    if (!reporter) {
+      throw new NotFoundError('Reporter');
+    }
+
     const survivor = await this.survivorsRepository.find(survivorId);
 
     if (!survivor) {
       throw new NotFoundError('Survivor');
     }
 
-    const report = await this.reportsRepository.create({ survivorId });
+    if (survivorId === reporterId) {
+      throw new ServerError('You cannot report yourself');
+    }
+
+    const existingReport = await this.reportsRepository.findUnique({
+      survivorId,
+      reporterId,
+    });
+
+    if (existingReport) {
+      throw new ServerError('Report already exists');
+    }
+
+    const report = await this.reportsRepository.create({
+      survivorId,
+      reporterId,
+    });
 
     if (!survivor.infectedAt) {
       const reportCount = await this.reportsRepository.countBySurvivor({

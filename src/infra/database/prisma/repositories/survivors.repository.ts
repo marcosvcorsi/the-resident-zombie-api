@@ -57,6 +57,9 @@ export class PrismaSurvivorsRepository
       orderBy: {
         createdAt: 'desc',
       },
+      where: {
+        infectedAt: null,
+      },
     });
 
     return survivors.map(PrismaSurvivorsMapper.toDomain);
