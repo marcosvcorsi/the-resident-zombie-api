@@ -16,6 +16,11 @@ export class ItemsController {
     type: PaginatedViewModel<ItemViewModel>,
   })
   async getItems(@Query() { page = 1, limit = 20 }: PaginatedListDto) {
-    return this.listItemsService.execute({ page, limit });
+    const { total, items } = await this.listItemsService.execute({
+      page,
+      limit,
+    });
+
+    return { total, data: items };
   }
 }
