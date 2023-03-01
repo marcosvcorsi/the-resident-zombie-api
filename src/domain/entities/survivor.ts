@@ -14,5 +14,6 @@ export type Survivor = {
   longitude: number;
   createdAt: Date;
   updatedAt?: Date;
+  infectedAt?: Date;
   inventory: Inventory[];
 };

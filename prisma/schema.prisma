@@ -26,6 +26,7 @@ model Survivor {
   updatedAt  DateTime    @updatedAt @map("updated_at")
   infectedAt DateTime?   @map("infected_at")
   inventory  Inventory[]
+  reports    Report[]
 
   @@map("survivors")
 }
@@ -50,4 +51,13 @@ model Inventory {
 
   @@id([survivorId, itemId])
   @@map("inventories")
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  survivor   Survivor @relation(fields: [survivorId], references: [id])
+  survivorId String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("reports")
 }

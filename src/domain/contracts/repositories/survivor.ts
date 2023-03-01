@@ -16,9 +16,7 @@ export interface CreateSurvivorRepository {
   create(data: CreateSurvivorParams): Promise<Survivor>;
 }
 
-export type UpdateSurvivorParams = Partial<
-  Omit<CreateSurvivorParams, 'inventory'>
->;
+export type UpdateSurvivorParams = Partial<Omit<Survivor, 'inventory'>>;
 
 export interface UpdateSurvivorRepository {
   update(id: string, data: UpdateSurvivorParams): Promise<Survivor>;
