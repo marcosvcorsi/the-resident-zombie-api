@@ -1,3 +1,4 @@
+import { CreateReportService } from '@/domain/services/create-report';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
@@ -18,6 +19,7 @@ import { CreateSurvivorService } from '../../../domain/services/create-survivor'
 import { CreateSurvivorDto } from '../dtos/create-survidor.dto';
 import { PaginatedListDto } from '../dtos/pagined-list.dto';
 import { UpdateSurvivorDto } from '../dtos/update-survivor.dto';
+import { ReportViewModel } from '../views/report.view';
 import {
   PaginatedSurvivorsViewModel,
   SurvivorViewModel,
@@ -32,6 +34,7 @@ export class SurvivorsController {
     private readonly getSurvivorService: GetSurvivorService,
     private readonly listSurvivorsService: ListSurvivorsService,
     private readonly deleteSurvivorService: DeleteSurvivorService,
+    private readonly createReportService: CreateReportService,
   ) {}
 
   @Post()
@@ -100,5 +103,16 @@ export class SurvivorsController {
       total,
       data: survivors.map(SurvivorViewModel.toHttp),
     };
+  }
+
+  @Post('/:id/reports')
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: ReportViewModel,
+  })
+  async createReport(@Param('id') survivorId: string) {
+    const { report } = await this.createReportService.execute({ survivorId });
+
+    return report;
   }
 }

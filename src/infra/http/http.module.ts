@@ -1,3 +1,4 @@
+import { CreateReportService } from '@/domain/services/create-report';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListItemsService } from '@/domain/services/list-items';
@@ -9,6 +10,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
 import { PrismaItemsRepository } from '../database/prisma/repositories/items.repositoty';
+import { PrismaReportsRepository } from '../database/prisma/repositories/reports.repository';
 import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survivors.repository';
 import { ItemsController } from './controllers/items.controller';
 import { SurvivorsController } from './controllers/survivors.controller';
@@ -68,6 +70,19 @@ import { SurvivorsResolver } from './resolvers/survivors';
       inject: [PrismaItemsRepository],
       useFactory: (prismaItemsRepository: PrismaItemsRepository) => {
         return new ListItemsService(prismaItemsRepository);
+      },
+    },
+    {
+      provide: CreateReportService,
+      inject: [PrismaSurvivorsRepository, PrismaReportsRepository],
+      useFactory: (
+        prismaSurvivorsRepository: PrismaSurvivorsRepository,
+        prismaReportsRepository: PrismaReportsRepository,
+      ) => {
+        return new CreateReportService(
+          prismaSurvivorsRepository,
+          prismaReportsRepository,
+        );
       },
     },
     SurvivorsResolver,

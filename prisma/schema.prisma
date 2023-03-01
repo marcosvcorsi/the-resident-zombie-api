@@ -59,5 +59,6 @@ model Report {
   survivorId String
   createdAt  DateTime @default(now()) @map("created_at")
 
+  @@index([survivorId])
   @@map("reports")
 }
