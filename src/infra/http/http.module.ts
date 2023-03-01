@@ -13,6 +13,7 @@ import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survi
 import { ItemsController } from './controllers/items.controller';
 import { SurvivorsController } from './controllers/survivors.controller';
 import { HealthModule } from './health.module';
+import { ItemsResolver } from './resolvers/items';
 import { SurvivorsResolver } from './resolvers/survivors';
 
 @Module({
@@ -70,6 +71,7 @@ import { SurvivorsResolver } from './resolvers/survivors';
       },
     },
     SurvivorsResolver,
+    ItemsResolver,
   ],
 })
 export class HttpModule {}

@@ -18,6 +18,22 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
+import { Item } from './item';
+
+@ObjectType()
+class Inventory {
+  @Field(() => Item)
+  item: Item;
+
+  @Field(() => Int)
+  quantity: number;
+
+  @Field()
+  createdAt: Date;
+
+  @Field({ nullable: true })
+  updatedAt?: Date;
+}
 
 @ObjectType()
 export class Survivor {
@@ -38,6 +54,15 @@ export class Survivor {
 
   @Field()
   longitude: number;
+
+  @Field()
+  createdAt: Date;
+
+  @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => [Inventory])
+  inventory: Inventory[];
 }
 
 @ObjectType()
@@ -101,8 +126,8 @@ export class CreateSurvivorInput {
   @IsNotEmpty()
   longitude: number;
 
-  @Field(() => [CreateSurvivorInput])
-  @ValidateNested()
+  @Field(() => [CreateSurvivorInventoryInput])
+  @ValidateNested({ each: true })
   inventory: CreateSurvivorInventoryInput[];
 }
 
