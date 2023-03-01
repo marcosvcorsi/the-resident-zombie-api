@@ -28,6 +28,7 @@ describe('SurvivorsController (e2e)', () => {
 
     await prismaService.inventory.deleteMany();
     await prismaService.item.deleteMany();
+    await prismaService.report.deleteMany();
     await prismaService.survivor.deleteMany();
 
     item = await prismaService.item.create({
@@ -138,7 +139,7 @@ describe('SurvivorsController (e2e)', () => {
     });
   });
 
-  describe('GET /survivors/', () => {
+  describe('GET /survivors', () => {
     it('should get survivors', async () => {
       const data = {
         name: 'any_name',
@@ -182,6 +183,33 @@ describe('SurvivorsController (e2e)', () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject(data);
+    });
+  });
+
+  describe('POST /survivors/:id/reports', () => {
+    it('should create a new survivor report', async () => {
+      const survivor = await prismaService.survivor.create({
+        data: {
+          name: 'any_name',
+          age: 18,
+          gender: Gender.MALE,
+          latitude: 1,
+          longitude: 1,
+        },
+      });
+
+      const response = await request(app.getHttpServer()).post(
+        `/survivors/${survivor.id}/reports`,
+      );
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body).toMatchObject({
+        id: expect.any(String),
+        survivor: {
+          id: survivor.id,
+        },
+        createdAt: expect.any(String),
+      });
     });
   });
 });
