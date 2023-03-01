@@ -13,13 +13,15 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSurvivorService } from '../../../domain/services/create-survivor';
 import { CreateSurvivorDto } from '../dtos/create-survidor.dto';
 import { PaginatedListDto } from '../dtos/pagined-list.dto';
 import { UpdateSurvivorDto } from '../dtos/update-survivor.dto';
-import { PaginatedViewModel } from '../views/paginated.view';
-import { SurvivorViewModel } from '../views/survivor.view';
+import {
+  PaginatedSurvivorsViewModel,
+  SurvivorViewModel,
+} from '../views/survivor.view';
 
 @Controller({ version: '1', path: 'survivors' })
 @ApiTags('survivors')
@@ -84,8 +86,10 @@ export class SurvivorsController {
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
-    type: PaginatedViewModel<SurvivorViewModel>,
+    type: PaginatedSurvivorsViewModel,
   })
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
   async getAll(@Query() { page = 1, limit = 20 }: PaginatedListDto) {
     const { total, survivors } = await this.listSurvivorsService.execute({
       page,

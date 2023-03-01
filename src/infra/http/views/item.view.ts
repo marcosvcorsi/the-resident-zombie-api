@@ -10,3 +10,13 @@ export class ItemViewModel {
   @ApiProperty()
   points: number;
 }
+
+export class PaginatedItemsViewModel {
+  @ApiProperty()
+  total: number;
+  @ApiProperty({
+    type: ItemViewModel,
+    isArray: true,
+  })
+  data: ItemViewModel[];
+}

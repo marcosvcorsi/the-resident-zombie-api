@@ -41,7 +41,10 @@ export class SurvivorViewModel {
   @ApiProperty()
   updatedAt?: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: InventoryViewModel,
+    isArray: true,
+  })
   inventory: InventoryViewModel[];
 
   static toHttp(survivor: Survivor): SurvivorViewModel {
@@ -49,4 +52,14 @@ export class SurvivorViewModel {
       ...survivor,
     };
   }
+}
+
+export class PaginatedSurvivorsViewModel {
+  @ApiProperty()
+  total: number;
+  @ApiProperty({
+    type: SurvivorViewModel,
+    isArray: true,
+  })
+  data: SurvivorViewModel[];
 }
