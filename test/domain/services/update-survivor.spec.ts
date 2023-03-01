@@ -46,8 +46,18 @@ describe('UpdateSurvivorService', () => {
     expect(response.survivor).toMatchObject(input);
   });
 
-  it('should throw SurvivorNotFoundError if survivor does not exists', async () => {
+  it('should throw NotFoundError if survivor does not exists', async () => {
     survivorRepository.find.mockResolvedValueOnce(null);
+
+    await expect(updateSurvivorService.execute(input)).rejects.toBeInstanceOf(
+      NotFoundError,
+    );
+  });
+
+  it('should throw NotFoundError if survivor is infected', async () => {
+    survivorRepository.find.mockResolvedValueOnce(
+      mockSurvivor({ infectedAt: new Date() }),
+    );
 
     await expect(updateSurvivorService.execute(input)).rejects.toBeInstanceOf(
       NotFoundError,

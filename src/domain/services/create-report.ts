@@ -36,13 +36,13 @@ export class CreateReportService {
   }: CreateReportInput): Promise<CreateReportOutput> {
     const reporter = await this.survivorsRepository.find(reporterId);
 
-    if (!reporter) {
+    if (!reporter || reporter.infectedAt) {
       throw new NotFoundError('Reporter');
     }
 
     const survivor = await this.survivorsRepository.find(survivorId);
 
-    if (!survivor) {
+    if (!survivor || survivor.infectedAt) {
       throw new NotFoundError('Survivor');
     }
 
@@ -64,16 +64,14 @@ export class CreateReportService {
       reporterId,
     });
 
-    if (!survivor.infectedAt) {
-      const reportCount = await this.reportsRepository.countBySurvivor({
-        survivorId,
-      });
+    const reportCount = await this.reportsRepository.countBySurvivor({
+      survivorId,
+    });
 
-      if (reportCount >= MINIMUM_REPORT_COUNT_TO_INFECT) {
-        await this.survivorsRepository.update(survivorId, {
-          infectedAt: new Date(),
-        });
-      }
+    if (reportCount >= MINIMUM_REPORT_COUNT_TO_INFECT) {
+      await this.survivorsRepository.update(survivorId, {
+        infectedAt: new Date(),
+      });
     }
 
     return { report };

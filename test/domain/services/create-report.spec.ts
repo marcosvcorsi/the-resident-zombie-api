@@ -57,10 +57,30 @@ describe('CreateReportService', () => {
     );
   });
 
+  it('should throw an error if reporter is infected', async () => {
+    survivorsRepository.find.mockResolvedValueOnce(
+      mockSurvivor({ infectedAt: new Date() }),
+    );
+
+    await expect(createReportService.execute(input)).rejects.toBeInstanceOf(
+      NotFoundError,
+    );
+  });
+
   it('should throw an error if survivor does not exists', async () => {
     survivorsRepository.find
-      .mockResolvedValueOnce(mockSurvivor())
-      .mockResolvedValueOnce(null);
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(mockSurvivor());
+
+    await expect(createReportService.execute(input)).rejects.toBeInstanceOf(
+      NotFoundError,
+    );
+  });
+
+  it('should throw an error if survivor is already infected', async () => {
+    survivorsRepository.find
+      .mockResolvedValueOnce(mockSurvivor({ infectedAt: new Date() }))
+      .mockResolvedValueOnce(mockSurvivor());
 
     await expect(createReportService.execute(input)).rejects.toBeInstanceOf(
       NotFoundError,
@@ -107,25 +127,6 @@ describe('CreateReportService', () => {
     expect(survivorsRepository.update).toHaveBeenCalledWith(input.survivorId, {
       infectedAt: expect.any(Date),
     });
-    expect(response.report).toMatchObject({
-      survivor: { id: input.survivorId },
-    });
-  });
-
-  it('should be able to create a new report and not update survivor to infected', async () => {
-    reportsRepository.countBySurvivor.mockResolvedValueOnce(5);
-    survivorsRepository.find
-      .mockResolvedValueOnce(mockSurvivor({ infectedAt: new Date() }))
-      .mockResolvedValueOnce(
-        mockSurvivor({ id: 'any_reporter_id', infectedAt: new Date() }),
-      );
-
-    const response = await createReportService.execute(input);
-
-    expect(survivorsRepository.find).toHaveBeenCalledWith(input.survivorId);
-    expect(reportsRepository.create).toHaveBeenCalledWith(input);
-    expect(reportsRepository.countBySurvivor).not.toHaveBeenCalled();
-    expect(survivorsRepository.update).not.toHaveBeenCalled();
     expect(response.report).toMatchObject({
       survivor: { id: input.survivorId },
     });

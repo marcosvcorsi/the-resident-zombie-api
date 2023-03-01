@@ -25,13 +25,13 @@ export class UpdateSurvivorService {
     id,
     ...data
   }: UpdateSurvivorInput): Promise<UpdateSurvivorOutput> {
-    let survivor = await this.survivorRepository.find(id);
+    const existingSurvivor = await this.survivorRepository.find(id);
 
-    if (!survivor) {
+    if (!existingSurvivor || existingSurvivor.infectedAt) {
       throw new NotFoundError('Survivor');
     }
 
-    survivor = await this.survivorRepository.update(id, data);
+    const survivor = await this.survivorRepository.update(id, data);
 
     return { survivor };
   }
