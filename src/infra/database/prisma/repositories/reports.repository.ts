@@ -26,7 +26,7 @@ export class PrismaReportsRepository
       include: {
         survivor: {
           include: {
-            inventory: {
+            inventoryItems: {
               include: {
                 item: true,
               },
@@ -35,7 +35,7 @@ export class PrismaReportsRepository
         },
         reporter: {
           include: {
-            inventory: {
+            inventoryItems: {
               include: {
                 item: true,
               },
@@ -72,7 +72,7 @@ export class PrismaReportsRepository
       include: {
         survivor: {
           include: {
-            inventory: {
+            inventoryItems: {
               include: {
                 item: true,
               },
@@ -81,7 +81,7 @@ export class PrismaReportsRepository
         },
         reporter: {
           include: {
-            inventory: {
+            inventoryItems: {
               include: {
                 item: true,
               },

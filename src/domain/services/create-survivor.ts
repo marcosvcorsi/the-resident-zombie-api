@@ -7,7 +7,7 @@ type CreateSurvivorInput = {
   gender: Gender;
   latitude: number;
   longitude: number;
-  inventory: {
+  inventoryItems: {
     itemId: string;
     quantity: number;
   }[];

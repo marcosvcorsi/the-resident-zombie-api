@@ -14,7 +14,7 @@ describe('CreateSurvivorService', () => {
     name: 'any name',
     latitude: 1,
     longitude: 1,
-    inventory: [
+    inventoryItems: [
       {
         itemId: 'any_id',
         quantity: 1,
@@ -39,7 +39,7 @@ describe('CreateSurvivorService', () => {
     expect(repository.create).toHaveBeenCalledWith(input);
     expect(response.survivor).toMatchObject({
       ...input,
-      inventory: [],
+      inventoryItems: [],
     });
   });
 

@@ -1,4 +1,4 @@
-import { Inventory } from './inventory';
+import { InventoryItem } from './inventory-item';
 
 export enum Gender {
   MALE = 'MALE',
@@ -15,5 +15,5 @@ export type Survivor = {
   createdAt: Date;
   updatedAt?: Date;
   infectedAt?: Date;
-  inventory: Inventory[];
+  inventoryItems: InventoryItem[];
 };

@@ -32,7 +32,7 @@ export class PrismaSurvivorsRepository
         id,
       },
       include: {
-        inventory: {
+        inventoryItems: {
           include: {
             item: true,
           },
@@ -48,7 +48,7 @@ export class PrismaSurvivorsRepository
       take: limit,
       skip: (page - 1) * limit,
       include: {
-        inventory: {
+        inventoryItems: {
           include: {
             item: true,
           },
@@ -70,15 +70,15 @@ export class PrismaSurvivorsRepository
   }
 
   async create({
-    inventory,
+    inventoryItems,
     ...rest
   }: CreateSurvivorParams): Promise<Survivor> {
     const survivor = await this.prismaService.survivor.create({
       data: {
         ...rest,
-        inventory: {
+        inventoryItems: {
           createMany: {
-            data: inventory.map((item) => ({
+            data: inventoryItems.map((item) => ({
               itemId: item.itemId,
               quantity: item.quantity,
             })),
@@ -86,7 +86,7 @@ export class PrismaSurvivorsRepository
         },
       },
       include: {
-        inventory: {
+        inventoryItems: {
           include: {
             item: true,
           },
@@ -104,7 +104,7 @@ export class PrismaSurvivorsRepository
       },
       data,
       include: {
-        inventory: {
+        inventoryItems: {
           include: {
             item: true,
           },
@@ -121,7 +121,7 @@ export class PrismaSurvivorsRepository
         id,
       },
       include: {
-        inventory: {
+        inventoryItems: {
           include: {
             item: true,
           },

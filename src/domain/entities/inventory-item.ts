@@ -1,6 +1,6 @@
 import { Item } from './item';
 
-export class Inventory {
+export class InventoryItem {
   item: Item;
   quantity: number;
   createdAt: Date;

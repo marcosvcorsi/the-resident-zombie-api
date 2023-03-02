@@ -1,16 +1,16 @@
 import { Gender, Survivor } from '../../../../domain/entities/survivor';
 import {
-  Inventory as PrismaInventory,
+  InventoryItem as PrismaInventoryItem,
   Item as PrismaItem,
   Survivor as PrismaSurvivor,
 } from '@prisma/client';
 
-type Inventory = PrismaInventory & { item: PrismaItem };
+type InventoryItem = PrismaInventoryItem & { item: PrismaItem };
 
 export class PrismaSurvivorsMapper {
   static toDomain(
     survivor: PrismaSurvivor & {
-      inventory: Inventory[];
+      inventoryItems: InventoryItem[];
     },
   ): Survivor {
     return {
@@ -22,7 +22,7 @@ export class PrismaSurvivorsMapper {
       name: survivor.name,
       createdAt: survivor.createdAt,
       updatedAt: survivor.updatedAt,
-      inventory: survivor.inventory.map((inv) => ({
+      inventoryItems: survivor.inventoryItems.map((inv) => ({
         item: inv.item,
         quantity: inv.quantity,
         createdAt: inv.createdAt,

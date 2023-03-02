@@ -11,11 +11,10 @@ import {
   IsString,
   IsUUID,
   Min,
-  MinLength,
   ValidateNested,
 } from 'class-validator';
 
-class Inventory {
+class InventoryItem {
   @IsString()
   @IsNotEmpty()
   @IsUUID('4')
@@ -57,6 +56,6 @@ export class CreateSurvivorDto {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => Inventory)
-  inventory: Inventory[];
+  @Type(() => InventoryItem)
+  inventoryItems: InventoryItem[];
 }

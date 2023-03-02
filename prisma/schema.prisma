@@ -16,32 +16,32 @@ enum Gender {
 }
 
 model Survivor {
-  id         String      @id @default(uuid())
-  name       String
-  age        Int
-  gender     Gender
-  latitude   Float
-  longitude  Float
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
-  infectedAt DateTime?   @map("infected_at")
-  inventory  Inventory[]
-  reports    Report[]
-  reported   Report[]    @relation("reporters")
+  id             String          @id @default(uuid())
+  name           String
+  age            Int
+  gender         Gender
+  latitude       Float
+  longitude      Float
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  infectedAt     DateTime?       @map("infected_at")
+  inventoryItems InventoryItem[]
+  reports        Report[]
+  reported       Report[]        @relation("reporters")
 
   @@map("survivors")
 }
 
 model Item {
-  id        String      @id @default(uuid())
-  name      String
-  points    Int
-  Inventory Inventory[]
+  id             String          @id @default(uuid())
+  name           String
+  points         Int
+  inventoryItems InventoryItem[]
 
   @@map("items")
 }
 
-model Inventory {
+model InventoryItem {
   survivor   Survivor @relation(fields: [survivorId], references: [id])
   survivorId String
   item       Item     @relation(fields: [itemId], references: [id])
@@ -51,7 +51,7 @@ model Inventory {
   updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@id([survivorId, itemId])
-  @@map("inventories")
+  @@map("inventory_items")
 }
 
 model Report {

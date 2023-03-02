@@ -1,14 +1,14 @@
 import { Report } from '@/domain/entities/report';
 import {
-  Inventory as PrismaInventory,
+  InventoryItem as PrismaInventoryItem,
   Item as PrismaItem,
   Report as PrismaReport,
   Survivor as PrismaSurvivor,
 } from '@prisma/client';
 import { PrismaSurvivorsMapper } from './survivor.mapper';
 
-type Inventory = PrismaInventory & { item: PrismaItem };
-type Survivor = PrismaSurvivor & { inventory: Inventory[] };
+type InventoryItem = PrismaInventoryItem & { item: PrismaItem };
+type Survivor = PrismaSurvivor & { inventoryItems: InventoryItem[] };
 
 export class PrismaReportsMapper {
   static toDomain(

@@ -10,7 +10,7 @@ export const mockSurvivor = (props: Partial<Survivor> = {}): Survivor => ({
   gender: Gender.MALE,
   latitude: 1,
   longitude: 1,
-  inventory: [],
+  inventoryItems: [],
   ...props,
 });
 

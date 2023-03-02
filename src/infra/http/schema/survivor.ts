@@ -84,7 +84,7 @@ export class SurvivorsArgs {
 }
 
 @InputType()
-export class CreateSurvivorInventoryInput {
+export class CreateSurvivorInventoryItemInput {
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -126,9 +126,9 @@ export class CreateSurvivorInput {
   @IsNotEmpty()
   longitude: number;
 
-  @Field(() => [CreateSurvivorInventoryInput])
+  @Field(() => [CreateSurvivorInventoryItemInput])
   @ValidateNested({ each: true })
-  inventory: CreateSurvivorInventoryInput[];
+  inventoryItems: CreateSurvivorInventoryItemInput[];
 }
 
 @InputType()

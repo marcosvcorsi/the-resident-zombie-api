@@ -6,7 +6,7 @@ export type CreateSurvivorParams = {
   age: number;
   latitude: number;
   longitude: number;
-  inventory?: {
+  inventoryItems?: {
     itemId: string;
     quantity: number;
   }[];
@@ -16,7 +16,7 @@ export interface CreateSurvivorRepository {
   create(data: CreateSurvivorParams): Promise<Survivor>;
 }
 
-export type UpdateSurvivorParams = Partial<Omit<Survivor, 'inventory'>>;
+export type UpdateSurvivorParams = Partial<Omit<Survivor, 'inventoryItems'>>;
 
 export interface UpdateSurvivorRepository {
   update(id: string, data: UpdateSurvivorParams): Promise<Survivor>;
