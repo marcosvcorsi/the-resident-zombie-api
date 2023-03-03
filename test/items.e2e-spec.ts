@@ -22,7 +22,7 @@ describe('SurvivorsController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    await prismaService.inventory.deleteMany();
+    await prismaService.inventoryItem.deleteMany();
     await prismaService.item.deleteMany();
   });
 

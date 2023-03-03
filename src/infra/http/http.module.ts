@@ -3,12 +3,14 @@ import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListItemsService } from '@/domain/services/list-items';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
+import { TradeItemsService } from '@/domain/services/trade-items';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { CreateSurvivorService } from '../../domain/services/create-survivor';
 import { DatabaseModule } from '../database/database.module';
+import { PrismaInventoryItemsRepository } from '../database/prisma/repositories/inventory-items.repository';
 import { PrismaItemsRepository } from '../database/prisma/repositories/items.repositoty';
 import { PrismaReportsRepository } from '../database/prisma/repositories/reports.repository';
 import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survivors.repository';
@@ -83,6 +85,19 @@ import { SurvivorsResolver } from './resolvers/survivors';
         return new CreateReportService(
           prismaSurvivorsRepository,
           prismaReportsRepository,
+        );
+      },
+    },
+    {
+      provide: TradeItemsService,
+      inject: [PrismaSurvivorsRepository, PrismaInventoryItemsRepository],
+      useFactory: (
+        prismaSurvivorsRepository: PrismaSurvivorsRepository,
+        prismaInventoryItemRepository: PrismaInventoryItemsRepository,
+      ) => {
+        return new TradeItemsService(
+          prismaSurvivorsRepository,
+          prismaInventoryItemRepository,
         );
       },
     },

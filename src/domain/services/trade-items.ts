@@ -14,7 +14,7 @@ type ItemCompose = {
   receiver: Survivor;
 };
 
-type TradeInventoryItem = {
+type TradeItem = {
   itemId: string;
   quantity: number;
 };
@@ -22,8 +22,8 @@ type TradeInventoryItem = {
 export type TradeItemsInput = {
   requesterId: string;
   receiverId: string;
-  requesterInventoryItems: TradeInventoryItem[];
-  receiverInventoryItems: TradeInventoryItem[];
+  requesterTradeItems: TradeItem[];
+  receiverTradeItems: TradeItem[];
 };
 
 export type TradeItemsOutput = {
@@ -49,7 +49,7 @@ export class TradeItemsService {
   }
 
   private mountItems(
-    tradeInventoryItems: TradeInventoryItem[],
+    tradeInventoryItems: TradeItem[],
     requester: Survivor,
     receiver: Survivor,
   ) {
@@ -151,8 +151,8 @@ export class TradeItemsService {
   async execute({
     requesterId,
     receiverId,
-    requesterInventoryItems,
-    receiverInventoryItems,
+    requesterTradeItems,
+    receiverTradeItems,
   }: TradeItemsInput): Promise<TradeItemsOutput> {
     const requester = await this.getAndValidateSurvivor(
       requesterId,
@@ -166,13 +166,13 @@ export class TradeItemsService {
     }
 
     const requesterItems = this.mountItems(
-      requesterInventoryItems,
+      requesterTradeItems,
       requester,
       receiver,
     );
 
     const receiverItems = this.mountItems(
-      receiverInventoryItems,
+      receiverTradeItems,
       receiver,
       requester,
     );
@@ -191,12 +191,12 @@ export class TradeItemsService {
       requester: this.mountSurvivor(
         requester,
         newRequesterItems.requesterItemsUpdated,
-        newRequesterItems.receiverItemsInserted,
+        newReceiverItems.receiverItemsInserted,
       ),
       receiver: this.mountSurvivor(
         receiver,
         newReceiverItems.requesterItemsUpdated,
-        newReceiverItems.receiverItemsInserted,
+        newRequesterItems.receiverItemsInserted,
       ),
     };
   }

@@ -2,6 +2,7 @@ import { CreateReportService } from '@/domain/services/create-report';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
+import { TradeItemsService } from '@/domain/services/trade-items';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import {
   Body,
@@ -20,12 +21,14 @@ import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSurvivorService } from '../../../domain/services/create-survivor';
 import { CreateSurvivorDto } from '../dtos/create-survidor.dto';
 import { PaginatedListDto } from '../dtos/pagined-list.dto';
+import { TradeItemsDto } from '../dtos/trade-items.dto';
 import { UpdateSurvivorDto } from '../dtos/update-survivor.dto';
 import { ReportViewModel } from '../views/report.view';
 import {
   PaginatedSurvivorsViewModel,
   SurvivorViewModel,
 } from '../views/survivor.view';
+import { TradeItemsViewModel } from '../views/trade-items.view';
 
 @Controller({ version: '1', path: 'survivors' })
 @ApiTags('survivors')
@@ -37,6 +40,7 @@ export class SurvivorsController {
     private readonly listSurvivorsService: ListSurvivorsService,
     private readonly deleteSurvivorService: DeleteSurvivorService,
     private readonly createReportService: CreateReportService,
+    private readonly tradeItemsService: TradeItemsService,
   ) {}
 
   @Post()
@@ -126,5 +130,27 @@ export class SurvivorsController {
     });
 
     return report;
+  }
+
+  @Post('/:id/trades')
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: TradeItemsViewModel,
+  })
+  async tradeItems(
+    @Param('id') receiverId: string,
+    @Headers('authorization') requesterId: string,
+    @Body() { receiverTradeItems, requesterTradeItems }: TradeItemsDto,
+  ) {
+    if (!requesterId) {
+      throw new UnauthorizedException();
+    }
+
+    return this.tradeItemsService.execute({
+      requesterId,
+      receiverId,
+      receiverTradeItems,
+      requesterTradeItems,
+    });
   }
 }

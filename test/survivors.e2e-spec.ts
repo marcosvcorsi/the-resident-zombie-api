@@ -26,7 +26,7 @@ describe('SurvivorsController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    await prismaService.inventory.deleteMany();
+    await prismaService.inventoryItem.deleteMany();
     await prismaService.item.deleteMany();
     await prismaService.report.deleteMany();
     await prismaService.survivor.deleteMany();
@@ -51,7 +51,7 @@ describe('SurvivorsController (e2e)', () => {
         gender: Gender.MALE,
         latitude: 1,
         longitude: 1,
-        inventory: [
+        inventoryItems: [
           {
             itemId: item.id,
             quantity: 1,
@@ -66,7 +66,7 @@ describe('SurvivorsController (e2e)', () => {
       expect(response.statusCode).toBe(201);
       expect(response.body).toMatchObject({
         ...payload,
-        inventory: expect.arrayContaining([
+        inventoryItems: expect.arrayContaining([
           expect.objectContaining({
             item,
             quantity: 1,
@@ -110,7 +110,7 @@ describe('SurvivorsController (e2e)', () => {
         gender: Gender.MALE,
         latitude: 1,
         longitude: 1,
-        inventory: {
+        inventoryItems: {
           create: {
             itemId: item.id,
             quantity: 1,
@@ -129,7 +129,7 @@ describe('SurvivorsController (e2e)', () => {
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject({
         ...data,
-        inventory: expect.arrayContaining([
+        inventoryItems: expect.arrayContaining([
           expect.objectContaining({
             item,
             quantity: 1,
@@ -219,6 +219,192 @@ describe('SurvivorsController (e2e)', () => {
           id: survivor.id,
         },
         createdAt: expect.any(String),
+      });
+    });
+  });
+
+  describe('POST /survivors/:id/trades', () => {
+    it('should trade items with max quantity', async () => {
+      const requester = await prismaService.survivor.create({
+        data: {
+          name: 'any_name',
+          age: 18,
+          gender: Gender.MALE,
+          latitude: 1,
+          longitude: 1,
+        },
+      });
+
+      const requesterItem = await prismaService.item.create({
+        data: {
+          name: 'any_item',
+          points: 1,
+        },
+      });
+
+      await prismaService.inventoryItem.create({
+        data: {
+          survivorId: requester.id,
+          itemId: requesterItem.id,
+          quantity: 1,
+        },
+      });
+
+      const receiver = await prismaService.survivor.create({
+        data: {
+          name: 'any_name',
+          age: 18,
+          gender: Gender.MALE,
+          latitude: 1,
+          longitude: 1,
+        },
+      });
+
+      const receiverItem = await prismaService.item.create({
+        data: {
+          name: 'other_item',
+          points: 1,
+        },
+      });
+
+      await prismaService.inventoryItem.create({
+        data: {
+          survivorId: receiver.id,
+          itemId: receiverItem.id,
+          quantity: 1,
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .post(`/survivors/${receiver.id}/trades`)
+        .send({
+          requesterTradeItems: [
+            {
+              itemId: requesterItem.id,
+              quantity: 1,
+            },
+          ],
+          receiverTradeItems: [
+            {
+              itemId: receiverItem.id,
+              quantity: 1,
+            },
+          ],
+        })
+        .set('Authorization', requester.id);
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body.receiver).toMatchObject({
+        inventoryItems: expect.arrayContaining([
+          expect.objectContaining({
+            item: requesterItem,
+            quantity: 1,
+          }),
+        ]),
+      });
+      expect(response.body.requester).toMatchObject({
+        inventoryItems: expect.arrayContaining([
+          expect.objectContaining({
+            item: receiverItem,
+            quantity: 1,
+          }),
+        ]),
+      });
+    });
+
+    it('should trade items with less quantity', async () => {
+      const requester = await prismaService.survivor.create({
+        data: {
+          name: 'any_name',
+          age: 18,
+          gender: Gender.MALE,
+          latitude: 1,
+          longitude: 1,
+        },
+      });
+
+      const requesterItem = await prismaService.item.create({
+        data: {
+          name: 'any_item',
+          points: 1,
+        },
+      });
+
+      await prismaService.inventoryItem.create({
+        data: {
+          survivorId: requester.id,
+          itemId: requesterItem.id,
+          quantity: 2,
+        },
+      });
+
+      const receiver = await prismaService.survivor.create({
+        data: {
+          name: 'any_name',
+          age: 18,
+          gender: Gender.MALE,
+          latitude: 1,
+          longitude: 1,
+        },
+      });
+
+      const receiverItem = await prismaService.item.create({
+        data: {
+          name: 'other_item',
+          points: 1,
+        },
+      });
+
+      await prismaService.inventoryItem.create({
+        data: {
+          survivorId: receiver.id,
+          itemId: receiverItem.id,
+          quantity: 2,
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .post(`/survivors/${receiver.id}/trades`)
+        .send({
+          requesterTradeItems: [
+            {
+              itemId: requesterItem.id,
+              quantity: 1,
+            },
+          ],
+          receiverTradeItems: [
+            {
+              itemId: receiverItem.id,
+              quantity: 1,
+            },
+          ],
+        })
+        .set('Authorization', requester.id);
+
+      expect(response.statusCode).toBe(201);
+      expect(response.body.receiver).toMatchObject({
+        inventoryItems: expect.arrayContaining([
+          expect.objectContaining({
+            item: requesterItem,
+            quantity: 1,
+          }),
+          expect.objectContaining({
+            item: receiverItem,
+            quantity: 1,
+          }),
+        ]),
+      });
+      expect(response.body.requester).toMatchObject({
+        inventoryItems: expect.arrayContaining([
+          expect.objectContaining({
+            item: requesterItem,
+            quantity: 1,
+          }),
+          expect.objectContaining({
+            item: receiverItem,
+            quantity: 1,
+          }),
+        ]),
       });
     });
   });

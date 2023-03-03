@@ -18,13 +18,13 @@ describe('TradeItemsService', () => {
   const input = {
     requesterId: 'any_requester_id',
     receiverId: 'any_receiver_id',
-    requesterInventoryItems: [
+    requesterTradeItems: [
       {
         itemId: 'any_requester_item_id',
         quantity: 1,
       },
     ],
-    receiverInventoryItems: [
+    receiverTradeItems: [
       {
         itemId: 'any_receiver_item_id',
         quantity: 1,
@@ -37,11 +37,11 @@ describe('TradeItemsService', () => {
     inventoryItems: [
       {
         item: {
-          id: input.requesterInventoryItems[0].itemId,
+          id: input.requesterTradeItems[0].itemId,
           name: 'any_name',
           points: 1,
         },
-        quantity: input.requesterInventoryItems[0].quantity,
+        quantity: input.requesterTradeItems[0].quantity,
         createdAt: new Date(),
       },
     ],
@@ -52,11 +52,11 @@ describe('TradeItemsService', () => {
     inventoryItems: [
       {
         item: {
-          id: input.receiverInventoryItems[0].itemId,
+          id: input.receiverTradeItems[0].itemId,
           name: 'any_name',
           points: 1,
         },
-        quantity: input.receiverInventoryItems[0].quantity,
+        quantity: input.receiverTradeItems[0].quantity,
         createdAt: new Date(),
       },
     ],
@@ -75,15 +75,15 @@ describe('TradeItemsService', () => {
 
     inventoryItemsRepository.save.mockReset();
     inventoryItemsRepository.save
-      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0])
       .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0])
       .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0])
-      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0]);
+      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0])
+      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0]);
 
     inventoryItemsRepository.delete.mockReset();
     inventoryItemsRepository.delete
-      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0])
-      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0]);
+      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0])
+      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0]);
 
     tradeItemsService = new TradeItemsService(
       survivorsRepository,
@@ -126,7 +126,7 @@ describe('TradeItemsService', () => {
     await expect(
       tradeItemsService.execute({
         ...input,
-        requesterInventoryItems: [
+        requesterTradeItems: [
           {
             itemId: 'invalid_id',
             quantity: 1,
@@ -144,7 +144,7 @@ describe('TradeItemsService', () => {
     await expect(
       tradeItemsService.execute({
         ...input,
-        receiverInventoryItems: [
+        receiverTradeItems: [
           {
             itemId: 'invalid_id',
             quantity: 1,
@@ -162,7 +162,7 @@ describe('TradeItemsService', () => {
     await expect(
       tradeItemsService.execute({
         ...input,
-        requesterInventoryItems: [
+        requesterTradeItems: [
           {
             itemId: 'any_requester_item_id',
             quantity: 2,
@@ -180,7 +180,7 @@ describe('TradeItemsService', () => {
     await expect(
       tradeItemsService.execute({
         ...input,
-        receiverInventoryItems: [
+        receiverTradeItems: [
           {
             itemId: 'any_receiver_item_id',
             quantity: 2,
@@ -202,11 +202,11 @@ describe('TradeItemsService', () => {
         inventoryItems: [
           {
             item: {
-              id: input.requesterInventoryItems[0].itemId,
+              id: input.requesterTradeItems[0].itemId,
               name: 'any_name',
               points: 1,
             },
-            quantity: input.requesterInventoryItems[0].quantity,
+            quantity: input.requesterTradeItems[0].quantity,
             createdAt: new Date(),
           },
           {
@@ -225,7 +225,7 @@ describe('TradeItemsService', () => {
     await expect(
       tradeItemsService.execute({
         ...input,
-        requesterInventoryItems: [
+        requesterTradeItems: [
           {
             itemId: 'any_requester_item_id',
             quantity: 1,
@@ -263,11 +263,11 @@ describe('TradeItemsService', () => {
         inventoryItems: [
           {
             item: {
-              id: input.requesterInventoryItems[0].itemId,
+              id: input.requesterTradeItems[0].itemId,
               name: 'any_name',
               points: 1,
             },
-            quantity: input.requesterInventoryItems[0].quantity + 1,
+            quantity: input.requesterTradeItems[0].quantity + 1,
             createdAt: new Date(),
           },
         ],
