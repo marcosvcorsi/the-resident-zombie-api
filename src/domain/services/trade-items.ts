@@ -1,5 +1,6 @@
 import {
   DeleteInventoryItemRepository,
+  OpenInventoryItemTransaction,
   SaveInventoryItemRepository,
 } from '../contracts/repositories/inventory-item';
 import { FindSurvivorRepository } from '../contracts/repositories/survivor';
@@ -35,7 +36,8 @@ export class TradeItemsService {
   constructor(
     private readonly survivorsRepository: FindSurvivorRepository,
     private readonly inventoryItemsRepository: SaveInventoryItemRepository &
-      DeleteInventoryItemRepository,
+      DeleteInventoryItemRepository &
+      OpenInventoryItemTransaction,
   ) {}
 
   private async getAndValidateSurvivor(id: string, field: string) {
@@ -105,11 +107,13 @@ export class TradeItemsService {
     const receiverItemsInserted: InventoryItem[] = [];
     const requesterItemsUpdated: InventoryItem[] = [];
 
+    await this.inventoryItemsRepository.beginTransaction();
+
     for (const item of items) {
       const { newInventoryItem, updatedInventoryItem, requester, receiver } =
         item;
 
-      const [updatedItem, newItem] = await Promise.all([
+      await Promise.all([
         item.updatedInventoryItem.quantity
           ? this.inventoryItemsRepository.save({
               itemId: updatedInventoryItem.item.id,
@@ -127,12 +131,14 @@ export class TradeItemsService {
         }),
       ]);
 
-      receiverItemsInserted.push(newItem);
+      receiverItemsInserted.push(newInventoryItem);
 
       if (updatedInventoryItem.quantity) {
-        requesterItemsUpdated.push(updatedItem);
+        requesterItemsUpdated.push(updatedInventoryItem);
       }
     }
+
+    await this.inventoryItemsRepository.commit();
 
     return { receiverItemsInserted, requesterItemsUpdated };
   }

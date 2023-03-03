@@ -1,5 +1,6 @@
 import {
   DeleteInventoryItemRepository,
+  OpenInventoryItemTransaction,
   SaveInventoryItemRepository,
 } from '@/domain/contracts/repositories/inventory-item';
 import { FindSurvivorRepository } from '@/domain/contracts/repositories/survivor';
@@ -12,7 +13,9 @@ describe('TradeItemsService', () => {
   let tradeItemsService: TradeItemsService;
   let survivorsRepository: MockProxy<FindSurvivorRepository>;
   let inventoryItemsRepository: MockProxy<
-    SaveInventoryItemRepository & DeleteInventoryItemRepository
+    SaveInventoryItemRepository &
+      DeleteInventoryItemRepository &
+      OpenInventoryItemTransaction
   >;
 
   const input = {
@@ -72,18 +75,6 @@ describe('TradeItemsService', () => {
     survivorsRepository.find
       .mockResolvedValueOnce(requesterSurvivor)
       .mockResolvedValueOnce(receiverSurvivor);
-
-    inventoryItemsRepository.save.mockReset();
-    inventoryItemsRepository.save
-      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0])
-      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0])
-      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0])
-      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0]);
-
-    inventoryItemsRepository.delete.mockReset();
-    inventoryItemsRepository.delete
-      .mockResolvedValueOnce(requesterSurvivor.inventoryItems[0])
-      .mockResolvedValueOnce(receiverSurvivor.inventoryItems[0]);
 
     tradeItemsService = new TradeItemsService(
       survivorsRepository,
@@ -280,10 +271,9 @@ describe('TradeItemsService', () => {
     expect(inventoryItemsRepository.save).toHaveBeenCalledTimes(3);
     expect(response.receiver).toMatchObject({
       inventoryItems: expect.arrayContaining([
-        {
-          ...receiverSurvivor.inventoryItems[0],
-          quantity: 1,
-        },
+        expect.objectContaining({
+          item: requesterSurvivor.inventoryItems[0].item,
+        }),
       ]),
     });
   });
