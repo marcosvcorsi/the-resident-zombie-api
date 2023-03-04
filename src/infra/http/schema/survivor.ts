@@ -8,6 +8,7 @@ import {
   ObjectType,
 } from '@nestjs/graphql';
 import {
+  ArrayMinSize,
   IsEnum,
   IsInt,
   IsLatitude,
@@ -16,6 +17,7 @@ import {
   IsNumber,
   IsString,
   IsUUID,
+  Min,
   ValidateNested,
 } from 'class-validator';
 import { Item } from './item';
@@ -129,6 +131,51 @@ export class CreateSurvivorInput {
   @Field(() => [CreateSurvivorInventoryItemInput])
   @ValidateNested({ each: true })
   inventoryItems: CreateSurvivorInventoryItemInput[];
+}
+
+@InputType()
+export class TradeItemInput {
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID('4')
+  @Field()
+  itemId: string;
+
+  @IsInt()
+  @Min(1)
+  @IsNotEmpty()
+  @Field()
+  quantity: number;
+}
+
+@InputType()
+export class CreateTradeInput {
+  @IsNotEmpty()
+  @IsString()
+  @IsUUID('4')
+  @Field()
+  receiverId: string;
+
+  @IsNotEmpty()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Field(() => [TradeItemInput])
+  requesterTradeItems: TradeItemInput[];
+
+  @IsNotEmpty()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Field(() => [TradeItemInput])
+  receiverTradeItems: TradeItemInput[];
+}
+
+@ObjectType()
+export class Trade {
+  @Field(() => Survivor)
+  receiver: Survivor;
+
+  @Field(() => Survivor)
+  requester: Survivor;
 }
 
 @InputType()

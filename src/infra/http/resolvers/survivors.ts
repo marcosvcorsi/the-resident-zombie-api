@@ -1,16 +1,20 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateSurvivorService } from '@/domain/services/create-survivor';
 import {
   CreateSurvivorInput,
+  CreateTradeInput,
   PaginatedSurvivorResponse,
   Survivor,
   SurvivorsArgs,
+  Trade,
   UpdateSurvivorInput,
 } from '../schema/survivor';
 import { UpdateSurvivorService } from '@/domain/services/update-survivor';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
+import { TradeItemsService } from '@/domain/services/trade-items';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Resolver()
 export class SurvivorsResolver {
@@ -20,6 +24,7 @@ export class SurvivorsResolver {
     private readonly getSurvivorService: GetSurvivorService,
     private readonly listSurvivorsService: ListSurvivorsService,
     private readonly deleteSurvivorService: DeleteSurvivorService,
+    private readonly tradeItemsService: TradeItemsService,
   ) {}
 
   @Query(() => PaginatedSurvivorResponse)
@@ -63,5 +68,22 @@ export class SurvivorsResolver {
     });
 
     return survivor;
+  }
+
+  @Mutation(() => Trade)
+  async createTrade(
+    @Args('input') input: CreateTradeInput,
+    @Context() ctx: any,
+  ) {
+    const requesterId = ctx.req.headers.authorization as string;
+
+    if (!requesterId) {
+      throw new UnauthorizedException();
+    }
+
+    return this.tradeItemsService.execute({
+      requesterId,
+      ...input,
+    });
   }
 }

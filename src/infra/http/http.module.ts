@@ -19,6 +19,7 @@ import { DashboardController } from './controllers/dashboard.controller';
 import { ItemsController } from './controllers/items.controller';
 import { SurvivorsController } from './controllers/survivors.controller';
 import { HealthModule } from './health.module';
+import { DashboardResolver } from './resolvers/dashboard';
 import { ItemsResolver } from './resolvers/items';
 import { ReportsResolver } from './resolvers/reports';
 import { SurvivorsResolver } from './resolvers/survivors';
@@ -119,6 +120,7 @@ import { SurvivorsResolver } from './resolvers/survivors';
     SurvivorsResolver,
     ItemsResolver,
     ReportsResolver,
+    DashboardResolver,
   ],
 })
 export class HttpModule {}

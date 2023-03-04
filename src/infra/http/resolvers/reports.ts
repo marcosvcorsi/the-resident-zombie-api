@@ -14,8 +14,6 @@ export class ReportsResolver {
   ) {
     const reporterId = ctx.req.headers.authorization as string;
 
-    console.log(ctx.req.headers);
-
     if (!reporterId) {
       throw new UnauthorizedException();
     }

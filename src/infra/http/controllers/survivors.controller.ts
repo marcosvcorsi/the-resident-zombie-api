@@ -17,7 +17,7 @@ import {
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSurvivorService } from '../../../domain/services/create-survivor';
 import { CreateSurvivorDto } from '../dtos/create-survidor.dto';
 import { PaginatedListDto } from '../dtos/pagined-list.dto';
