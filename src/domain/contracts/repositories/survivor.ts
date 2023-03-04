@@ -35,8 +35,12 @@ export interface FindAllSurvivorsRepository {
   findAll(data: FindAllSurvivorsParams): Promise<Survivor[]>;
 }
 
+export type CountAllSurvivorsParams = {
+  infected?: boolean;
+};
+
 export interface CountAllSurvivorsRepository {
-  count(): Promise<number>;
+  count(data?: CountAllSurvivorsParams): Promise<number>;
 }
 
 export interface DeleteSurvivorRepository {

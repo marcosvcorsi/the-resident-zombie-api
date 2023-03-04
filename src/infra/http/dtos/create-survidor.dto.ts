@@ -15,11 +15,13 @@ import {
 } from 'class-validator';
 
 class InventoryItem {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @IsUUID('4')
   itemId: string;
 
+  @ApiProperty()
   @IsInt()
   @Min(1)
   @IsNotEmpty()
@@ -53,6 +55,10 @@ export class CreateSurvivorDto {
   @IsNotEmpty()
   longitude: number;
 
+  @ApiProperty({
+    type: InventoryItem,
+    isArray: true,
+  })
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })

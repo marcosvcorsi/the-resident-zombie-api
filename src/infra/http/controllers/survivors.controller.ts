@@ -97,8 +97,6 @@ export class SurvivorsController {
     status: HttpStatus.OK,
     type: PaginatedSurvivorsViewModel,
   })
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'limit', type: Number, required: false })
   async getAll(@Query() { page = 1, limit = 20 }: PaginatedListDto) {
     const { total, survivors } = await this.listSurvivorsService.execute({
       page,

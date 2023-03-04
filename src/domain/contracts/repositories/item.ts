@@ -12,3 +12,17 @@ export interface FindAllItemsRepository {
 export interface CountAllItemsRepository {
   count(): Promise<number>;
 }
+
+export interface GetTotalLostPointsRepository {
+  getTotalLostPoints(): Promise<number>;
+}
+
+type GetTotalGroupByItemResponse = {
+  id: string;
+  name: string;
+  total: number;
+};
+
+export interface GetTotalGroupByItemRepository {
+  getTotalGroupByItem(): Promise<GetTotalGroupByItemResponse[]>;
+}
