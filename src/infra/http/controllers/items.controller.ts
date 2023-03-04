@@ -14,8 +14,6 @@ export class ItemsController {
     status: HttpStatus.OK,
     type: PaginatedItemsViewModel,
   })
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'limit', type: Number, required: false })
   async getItems(@Query() { page = 1, limit = 20 }: PaginatedListDto) {
     const { total, items } = await this.listItemsService.execute({
       page,
