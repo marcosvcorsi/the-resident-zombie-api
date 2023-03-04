@@ -27,6 +27,7 @@ async function bootstrap() {
     .setDescription('The Resident Zombie API description')
     .setVersion('1.0')
     .addTag('survivors')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

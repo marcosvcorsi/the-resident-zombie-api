@@ -17,7 +17,7 @@ import {
   Query,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSurvivorService } from '../../../domain/services/create-survivor';
 import { CreateSurvivorDto } from '../dtos/create-survidor.dto';
 import { PaginatedListDto } from '../dtos/pagined-list.dto';
@@ -114,10 +114,13 @@ export class SurvivorsController {
     status: HttpStatus.CREATED,
     type: ReportViewModel,
   })
+  @ApiBearerAuth()
   async createReport(
     @Param('id') survivorId: string,
-    @Headers('authorization') reporterId: string,
+    @Headers() headers: Record<string, string>,
   ) {
+    const reporterId = headers.authorization?.replace('Bearer', '').trim();
+
     if (!reporterId) {
       throw new UnauthorizedException();
     }
@@ -135,11 +138,14 @@ export class SurvivorsController {
     status: HttpStatus.CREATED,
     type: TradeItemsViewModel,
   })
+  @ApiBearerAuth()
   async tradeItems(
     @Param('id') receiverId: string,
-    @Headers('authorization') requesterId: string,
+    @Headers() headers: Record<string, string>,
     @Body() { receiverTradeItems, requesterTradeItems }: TradeItemsDto,
   ) {
+    const requesterId = headers.authorization?.replace('Bearer', '').trim();
+
     if (!requesterId) {
       throw new UnauthorizedException();
     }
