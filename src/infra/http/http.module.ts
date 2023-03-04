@@ -1,5 +1,6 @@
 import { CreateReportService } from '@/domain/services/create-report';
 import { DeleteSurvivorService } from '@/domain/services/delete-survivor';
+import { GetMetricsService } from '@/domain/services/get-metrics';
 import { GetSurvivorService } from '@/domain/services/get-survivor';
 import { ListItemsService } from '@/domain/services/list-items';
 import { ListSurvivorsService } from '@/domain/services/list-survivors';
@@ -14,6 +15,7 @@ import { PrismaInventoryItemsRepository } from '../database/prisma/repositories/
 import { PrismaItemsRepository } from '../database/prisma/repositories/items.repositoty';
 import { PrismaReportsRepository } from '../database/prisma/repositories/reports.repository';
 import { PrismaSurvivorsRepository } from '../database/prisma/repositories/survivors.repository';
+import { DashboardController } from './controllers/dashboard.controller';
 import { ItemsController } from './controllers/items.controller';
 import { SurvivorsController } from './controllers/survivors.controller';
 import { HealthModule } from './health.module';
@@ -31,7 +33,7 @@ import { SurvivorsResolver } from './resolvers/survivors';
     }),
     HealthModule,
   ],
-  controllers: [SurvivorsController, ItemsController],
+  controllers: [SurvivorsController, ItemsController, DashboardController],
   providers: [
     {
       provide: CreateSurvivorService,
@@ -96,6 +98,19 @@ import { SurvivorsResolver } from './resolvers/survivors';
         prismaInventoryItemRepository: PrismaInventoryItemsRepository,
       ) => {
         return new TradeItemsService(
+          prismaSurvivorsRepository,
+          prismaInventoryItemRepository,
+        );
+      },
+    },
+    {
+      provide: GetMetricsService,
+      inject: [PrismaSurvivorsRepository, PrismaInventoryItemsRepository],
+      useFactory: (
+        prismaSurvivorsRepository: PrismaSurvivorsRepository,
+        prismaInventoryItemRepository: PrismaInventoryItemsRepository,
+      ) => {
+        return new GetMetricsService(
           prismaSurvivorsRepository,
           prismaInventoryItemRepository,
         );

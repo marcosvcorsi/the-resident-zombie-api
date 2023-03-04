@@ -5,6 +5,10 @@ import {
   SaveInventoryItemParams,
   SaveInventoryItemRepository,
 } from '@/domain/contracts/repositories/inventory-item';
+import {
+  GetTotalGroupByItemRepository,
+  GetTotalLostPointsRepository,
+} from '@/domain/contracts/repositories/item';
 import { Injectable } from '@nestjs/common';
 import { Prisma, InventoryItem as PrismaInventoryItem } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
@@ -14,7 +18,9 @@ export class PrismaInventoryItemsRepository
   implements
     SaveInventoryItemRepository,
     DeleteInventoryItemRepository,
-    OpenInventoryItemTransaction
+    OpenInventoryItemTransaction,
+    GetTotalLostPointsRepository,
+    GetTotalGroupByItemRepository
 {
   private hasTransaction = false;
   private operations: Prisma.PrismaPromise<PrismaInventoryItem>[];
@@ -86,5 +92,60 @@ export class PrismaInventoryItemsRepository
     } else {
       this.operations.push(deleteOperation);
     }
+  }
+
+  async getTotalLostPoints(): Promise<number> {
+    const items = await this.prismaService.item.findMany({
+      where: {
+        inventoryItems: {
+          some: {
+            survivor: {
+              infectedAt: {
+                not: null,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        inventoryItems: true,
+      },
+    });
+
+    return items.reduce((acc, item) => {
+      const totalQuantity = item.inventoryItems.reduce(
+        (quantity, iv) => quantity + iv.quantity,
+        0,
+      );
+
+      return acc + item.points * totalQuantity;
+    }, 0);
+  }
+
+  async getTotalGroupByItem(): Promise<
+    { id: string; name: string; total: number }[]
+  > {
+    const inventoryItems = await this.prismaService.inventoryItem.groupBy({
+      by: ['itemId'],
+      _sum: {
+        quantity: true,
+      },
+    });
+
+    return Promise.all(
+      inventoryItems.map(async (inventoryItem) => {
+        const item = await this.prismaService.item.findUnique({
+          where: {
+            id: inventoryItem.itemId,
+          },
+        });
+
+        return {
+          id: item.id,
+          name: item.name,
+          total: inventoryItem._sum.quantity,
+        };
+      }),
+    );
   }
 }

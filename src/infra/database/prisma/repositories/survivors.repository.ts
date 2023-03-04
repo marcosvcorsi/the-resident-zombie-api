@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Survivor } from '../../../../domain/entities/survivor';
 import {
+  CountAllSurvivorsParams,
   CountAllSurvivorsRepository,
   CreateSurvivorParams,
   CreateSurvivorRepository,
@@ -65,7 +66,17 @@ export class PrismaSurvivorsRepository
     return survivors.map(PrismaSurvivorsMapper.toDomain);
   }
 
-  async count(): Promise<number> {
+  async count({ infected }: CountAllSurvivorsParams = {}): Promise<number> {
+    if (infected) {
+      return this.prismaService.survivor.count({
+        where: {
+          infectedAt: {
+            not: null,
+          },
+        },
+      });
+    }
+
     return this.prismaService.survivor.count();
   }
 
