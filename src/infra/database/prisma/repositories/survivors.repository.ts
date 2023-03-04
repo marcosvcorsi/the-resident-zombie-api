@@ -127,18 +127,30 @@ export class PrismaSurvivorsRepository
   }
 
   async delete(id: string): Promise<Survivor> {
-    const survivor = await this.prismaService.survivor.delete({
-      where: {
-        id,
-      },
-      include: {
-        inventoryItems: {
-          include: {
-            item: true,
+    const [, , survivor] = await this.prismaService.$transaction([
+      this.prismaService.report.deleteMany({
+        where: {
+          survivorId: id,
+        },
+      }),
+      this.prismaService.inventoryItem.deleteMany({
+        where: {
+          survivorId: id,
+        },
+      }),
+      this.prismaService.survivor.delete({
+        where: {
+          id,
+        },
+        include: {
+          inventoryItems: {
+            include: {
+              item: true,
+            },
           },
         },
-      },
-    });
+      }),
+    ]);
 
     return PrismaSurvivorsMapper.toDomain(survivor);
   }
