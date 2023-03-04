@@ -1,14 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ServerErrorFilter } from './infra/http/filters/error.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(helmet());
+  // app.use(helmet());
   app.enableCors();
   app.setGlobalPrefix('api');
   app.enableVersioning();
