@@ -23,7 +23,7 @@ import {
 import { Item } from './item';
 
 @ObjectType()
-class Inventory {
+class InventoryItem {
   @Field(() => Item)
   item: Item;
 
@@ -63,8 +63,8 @@ export class Survivor {
   @Field({ nullable: true })
   updatedAt?: Date;
 
-  @Field(() => [Inventory])
-  inventory: Inventory[];
+  @Field(() => [InventoryItem])
+  inventoryItems: InventoryItem[];
 }
 
 @ObjectType()
